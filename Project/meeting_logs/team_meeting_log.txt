@@ -1,0 +1,19 @@
+Team Meeting Logs
+	i. Decisions made
+	ii. Alternative actions/options discussed
+	iii. Follow-up items, including agreed-on roles and responsibilities
+
+Tue November 7, 2023, 11:45am-12:00pm
+	i. Catch those up on current Project Overview progress who weren't present in Friday's recitation.
+	ii. None discussed for first meeting.
+	iii. Ask the Instructor for details on Google Books API.
+
+Thu November 9, 2023, 11:45am-12:00pm, TA meeting
+	i. Made decisions for future TA meetings and deliverables
+	ii. None discussed for first meeting.
+	iii. Assign a scribe for each meeting.
+
+Thu November 9, 2023, 12:00pm-12:15pm
+	i. Scribe assigned for previous logs. Decided to start looking at what parts each member wants to work on.
+	ii. None discussed.
+	iii. Will write and add items/details for the previous meetings.
