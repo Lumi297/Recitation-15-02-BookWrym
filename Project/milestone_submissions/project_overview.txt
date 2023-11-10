@@ -1,0 +1,46 @@
+1. Team Number
+	Team 15-02
+
+2. Team Name
+	TagBook 
+
+3. Team Members
+	Members:
+	Bobby Vu; bovu6900@colorado.edu; 896756,
+	Brandon Lehman; brle8381@colorado.edu; Lumi297,
+	Jeremy Schuberth Jesc9948@colorado.edu Azzazzal,
+	Benzabihi: beza6579@colorado.edu benzabihi
+
+4. Application Name
+	BookWyrm
+
+5. Application Description
+	A website/application that allows users to search a library of books, check off favorite categories/genres, and get recommended other books based on their preferences. 
+	This works by having various users apply tags to books they find interesting based on Genre, Author, or even how various other websites rate the book. 
+	These tags are intended to be user definable, and stored over the course of a week.
+
+	Our end goal is to provide a website that provides a more reliable experience in helping prospective readers find something that suits their fancy. 
+	All too often most critical websites only provide a number as their final conclusion on a book. 
+	This is unreliable, and leads to most books and the stories they contain being tossed aside.  
+
+6. Vision Statement
+	Vision statement: For Readers seeking their personal story. 
+
+7. Version Control
+	https://github.com/Lumi297/Recitation-15-02-BookWrym.git 
+
+8. Development Methodology
+	Refer to Project Board in the repository
+
+9. Communication Plan
+	During the course of the project, we plan to use Discord to communicate with eachother and Zoom to communicate with the TA.
+
+10. Meeting Plan
+	Team: Tuesday, Discord, 11:45am-12:00pm; Thursday, Discord, 12:00pm-12:15pm
+	TA: Thursday, Zoom, 11:45am-12:00pm
+
+11. Use Case Diagram
+	Refer to 'milestones sumbissions' folder to view Use Case Diagrams
+
+12. Wireframes
+	Refer to 'milestones sumbissions' folder to view Wireframes
