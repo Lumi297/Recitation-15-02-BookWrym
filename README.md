@@ -13,5 +13,5 @@ This is unreliable, and leads to most books and the stories they contain being t
 Bobby Vu; bovu6900@colorado.edu; 896756,
 Brandon Lehman; brle8381@colorado.edu; Lumi297,
 Jeremy Schuberth; Jesc9948@colorado.edu Azzazzal,
-Benzabihi; beza6579@colorado.edu; benzabihi
+Benzabihi; beza6579@colorado.edu; enzabihi
 Nikko Gajowniczek; nigj5506@colorado.edu; nikko-guy 
