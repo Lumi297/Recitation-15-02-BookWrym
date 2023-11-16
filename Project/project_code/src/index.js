@@ -94,7 +94,7 @@ app.post('/login', async(req, res) => {
         req.session.user = user;
         req.session.save();
          // goal is to redirect to the discover object before anything else 
-        res.redirect('/discover');
+        res.status(200);
       }
 
     }).catch((err) => {
