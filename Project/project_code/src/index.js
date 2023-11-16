@@ -70,6 +70,7 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', async(req, res) => {
+  //res.json({status: 'success', message: 'Welcome!'});
   const user = {
     username: undefined,
     password: undefined,
@@ -93,14 +94,26 @@ app.post('/login', async(req, res) => {
         // below is the default code for the login side of things. 
         req.session.user = user;
         req.session.save();
+        
          // goal is to redirect to the discover object before anything else 
-        res.redirect('/discover');
+        //res.redirect('/discover');
       }
 
     }).catch((err) => {
       console.log(err);
       res.redirect("/login");
     });
+});
+
+app.get('/search', async (req,res) =>{
+  //const searchQuery = req.body.query;
+  const title = "music"
+  const response = await axios.get('https://www.googleapis.com/books/v1/volumesq='+title+'&key=AIzaSyBH3ZyNSdNSJAtWdRe-Krhayk4KfaVvmMI')
+  .then(res=>console.log(res.data))
+  .catch(err=>console.log(err))
+    //const books = response.data.items || [];
+    //console.log(books);
+    //res.render('pages/search', { books });
 });
 
 
