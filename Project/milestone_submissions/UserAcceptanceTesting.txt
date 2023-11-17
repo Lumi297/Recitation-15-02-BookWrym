@@ -1,0 +1,29 @@
+Feature 1: Login
+User should be able to login to an account with a username and password
+  To do this they must type their username and password into the form
+  The form can not be submitted without both items
+  Their information is stored as the current session
+The login should fail if the username or password are incorrect
+  User should receive and error message when one is incorrect
+
+To test this feature we are using mocha and chai, for our successful test we have login information already in the database that we test our login function against. For the negative test we check with an invalid username/password and make sure that it returns an a response that tells us it is an invalid input
+
+Feature 2: Register
+User should be able to create an account with a username and password
+  To do this they must type the created username and password into the form
+  The form can not be submitted without both items
+  Their information is stored in the users table
+  They are redirected to the login page
+If the username is already part of the database the registration will be rejected
+  The user should receive and error telling them they are already registered and a redirect to the login page
+
+To test this feature we are using mocha and chai, for our successful test we check the information we received against the information in the users table. For our negative test we try to register with a preloaded user and make sure it gives us an error that we are already registered
+
+Feature 3: Add Favorite
+User should be able to favorite books and save them to their account
+  They have to click add favorite on the book page
+  Their information is stored in the users to books table
+Adding a book should fail if it is already in their favorites
+  User should receive an error message when adding a book already part of their library
+
+To test this feature we are using mocha and chai, for our successful test we check if the operation of adding the book has succeeded and check the users to books table. For our we will use a book preloaded to the users to books library and make sure it returns a response telling us the books is already favorited
