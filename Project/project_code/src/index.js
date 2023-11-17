@@ -105,11 +105,29 @@ app.post('/login', async(req, res) => {
     });
 });
 
-app.get('/search', async (req,res) =>{
-  //const searchQuery = req.body.query;
-  const title = "music"
-  const response = await axios.get('https://www.googleapis.com/books/v1/volumesq='+title+'&key=AIzaSyBH3ZyNSdNSJAtWdRe-Krhayk4KfaVvmMI')
-  .then(res=>console.log(res.data))
+//Needs another page that doesnt render results for search
+app.get('/search', (req,res) =>{
+  res.render('pages/search')
+})
+
+app.post('/search', (req,res) =>{
+  //checks if something is put in, if not defaults to fantasy
+  let title = req.body.query;
+  console.log(req.body.title)
+  if(title != undefined){
+    title  = req.body.title;
+  }else{
+    title = "fantasy";
+  }
+  //renders search page with title and author
+  const response = axios.get('https://www.googleapis.com/books/v1/volumes?q='+title+'&maxResults=10')
+  .then(results=>{
+    //console.log(results.data.items[0].volumeInfo.title)
+    const books = results.data.items || [];
+    res.render('pages/search', { books });
+  })
+    
+    //console.log(res.data))
   .catch(err=>console.log(err))
     //const books = response.data.items || [];
     //console.log(books);
