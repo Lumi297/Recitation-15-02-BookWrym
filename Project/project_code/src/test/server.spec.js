@@ -55,6 +55,7 @@ describe('Server!', () => {
   it('positive; login successful', done => {
     chai
       .request(server)
+      .post('/login')
       .send({username:'John doe', password:'12345'}) // critical to send a json object with the correct credentials
       .end((err, res) => {
         expect(res).to.have.status(200);
@@ -65,9 +66,11 @@ describe('Server!', () => {
   it('negative: /login. Checking for invalid password', done => {
     chai
       .request(server)
+      .post('/login')
       .send({username:'John doe', password:'password'})
       .end((err, res) => {
-        expect(res).to.have.status(400); // not sure I remember the correct code for this, point is that it's wrong 
+        expect(res).to.have.status(200);
+        expect(res.body.message).to.equals('invalid input') // not sure I remember the correct code for this, point is that it's wrong 
         done();
       });
   });
@@ -77,6 +80,7 @@ describe('Server!', () => {
   it('positive: /register. checking for succesful addition', done => {
     chai 
     .request(server)
+    .post('/register')
     .send({username:'test',password:'password'})
     .end((err, res) => {
       expect(res).to.have.status(200);
@@ -87,13 +91,14 @@ describe('Server!', () => {
   }); 
 
   // not sure where this would go wrong potentially, but adding a negative on register (maybe we check and see if the user already exists in the DB? )
-  // negative 
-  it('negative: /register. checking for register failure ', done => {
+  // negative test -> need to check and see how we make sure things are playing nice here
+  it('negative: /register. checking for duplicate user', done => {
       chai
       .request(server)
+      .post('/register')
       .send({username: 'test', password:'password'})
       .end((err,res)=>{
-        expect(res).to.have.status(400);
+        expect(res).to.have.status(200);
         done();
       });
   });

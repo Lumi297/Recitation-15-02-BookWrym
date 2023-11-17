@@ -106,14 +106,17 @@ app.post('/login', async(req, res) => {
     db.any(userSelect).then(async (data)=>{
       user.username = data[0].username;
       user.password = data[0].password;
-      console.log(data);
-      console.log(user.username);
-      console.log(user.password);
+      // console.log(data);
+      // console.log(user.username);
+      // console.log(user.password);
       const passCheck = await bcrypt.compare(req.body.password, user.password); // needs to be put here for posterity
-       console.log(passCheck);
+     //  console.log(passCheck);
       // if statement makes sure that things will work just fine 
       if (passCheck ==false){
-          res.redirect('/login');
+          res
+          .body.message('invalid input')
+          .status(200)
+          .redirect('/login');
       } else {
         // below is the default code for the login side of things. 
         req.session.user = user;
@@ -124,7 +127,8 @@ app.post('/login', async(req, res) => {
 
     }).catch((err) => {
       console.log(err);
-      res.status(400)
+      res
+      .status(400)
       .redirect("/login");
     });
 });
