@@ -1,29 +1,60 @@
-<%- include ('../partials/head') %>
+<%- include ('../partials/header') %>
 <%- include ('../partials/menu') %>
 
 <main>
-  <div class="container">
-    <!-- THE REST OF YOUR HTML CODE GOES HERE -->
+    <div class="container1">
+        <div class="fhalf">         
+            <div class="col sm-12">
+                <div class="row py-1">
+                    <h1>PlaceholderPlaceholderPlaceholder Placeholder</h1>
+                </div>
+                
+                <div class="row py-1">
+                    <p>Placeholder</p>
+                </div>
 
-    <!-- goal is to create a form, like last time, I want to say that the methods will be similar -->
-    <form class = "form" action = "/login" method = "POST">
-       <div class = "form-group">
-         <label for = "username ">Username:</label>
-         <input type = "text"  name = "username">
-       </div> 
-       <div class = "form-group">
-        <label for = "password">Password:</label>
-        <input type = "text" name = "password">
-       </div>
-       <div class = "form-text">
-         <p>Already have an account?  <a href = "/register" method = "GET">Register </a></p>
-       </div>
-       <!-- going to add a link for if you already have an account -->
-      
-       <!-- last thing to do is to add the button  -->
-       <button type = "submit" action = "/login" method = "POST" id = "button" class = "btn btn-primary"> 
-    </form>
-  </div>
+                <div class="row py-1">
+                    <p>Placeholder</p>
+                </div>
+
+                <div class="row">
+                    <form action="/register" method="GET">
+                        <button type="submit" class="btn btn-link"  style="color: white;">Create account?</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="shalf">
+            <div class="content">
+                <form action="/login" method="POST">
+                    <div class="col sm-12">
+                        <div class="row py-1">
+                            <h1>Sign in</h1>
+                        </div>
+                        
+                        <div class="row py-1"> 
+                                <div class="form-row">
+                                    <input class='form-control' type="text" id="username" name="username" placeholder="username"/>
+                                </div>
+                        </div>
+        
+                        <div class="row py-1">
+                            <div class="form-row">
+                                <input class='form-control' type="text" id="password" name="password" placeholder="password"/>
+                            </div>
+                        </div>
+        
+                        <div class="row py-1">
+                            <button type="submit" class="btn btn-primary" id="login-register-button">Sign in</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
 </main>
 
 <%- include ('../partials/footer') %>
