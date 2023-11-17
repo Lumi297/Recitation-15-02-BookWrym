@@ -103,6 +103,19 @@ app.post('/login', async(req, res) => {
     });
 });
 
+//for this branch, we will be adding a route for Bookpage, this should be a get, and should be able to take things correctly 
+app.get("/bookPage", function(req, res) {
+    //  going to use our database to get the thing done , external API call to google is expected -Brandon
+    const query = `SELECT * FROM books WHERE title = '${req.body.title}'`; // tentative query for now
+
+    // db.any query here 
+    db.any(query).then(
+      res.status(200).render('/bookPage', {})
+    ).catch(err => {
+
+    })
+}); 
+// also going to note, there will be a post route for adding to favorites, this will 
 
 // for testing purposes, leaving this here 
 module.exports = app.listen(3000);
