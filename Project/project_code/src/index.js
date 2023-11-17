@@ -35,6 +35,10 @@ db.connect()
     console.log('ERROR:', error.message || error);
   });
 
+
+// For external CSS files
+app.use(express.static('resources'));
+
 // *****************************************************
 // <!-- Section 3 : App Settings -->
 // *****************************************************
@@ -135,4 +139,4 @@ app.post('/login', async(req, res) => {
 
 
 // for testing purposes, leaving this here 
-module.exports = app.listen(3000);
+app.listen(3000);
