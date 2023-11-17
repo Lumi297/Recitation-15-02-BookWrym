@@ -62,8 +62,33 @@ app.get('/welcome', (req, res) => {
     res.json({status: 'success', message: 'Welcome!'});
   });
 
+// 
 
 // copy pasting lab 9 routes for testing purposes
+app.get('/register', (req, res) => {
+  res.render('pages/register'); // rendering the page gher 
+});
+
+// register will have multiple components, above is get, below is the post 
+// going to make a note of this so I remember, the async function is required here 
+app.post('/register', async (req, res) => {
+  //hash the password using bcrypt library
+const hash = await bcrypt.hash(req.body.password, 10);
+
+  // next item on the to do list is to take the username and password and insert them into the users table 
+  let username = req.body.username; // think this will be fine 
+
+  const submission =  `INSERT INTO users (username, password) VALUES( '${username}', '${hash}') `; // think we're supposed to insert the hashed value, but I am not sure 
+  db.any(submission)
+  .then((data) => {
+      res.status(200).redirect('/login'); // believe this is the most I am supposed to do here. 
+      // think I need to use the get route here, not sure if I need to do more 
+  })
+  .catch((err) => {
+      res.status(400).redirect('/register'); // think I am supposed to utilize the get routes, but not sure how to do that. 
+      // current survey says I don't need to do anything, will have to check about that. 
+  })
+});
 
 app.get('/login', (req, res) => {
     res.render('pages/login'); // this should be fine 
@@ -99,7 +124,8 @@ app.post('/login', async(req, res) => {
 
     }).catch((err) => {
       console.log(err);
-      res.redirect("/login");
+      res.status(400)
+      .redirect("/login");
     });
 });
 
