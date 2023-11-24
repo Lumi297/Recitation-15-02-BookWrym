@@ -35,6 +35,10 @@ db.connect()
     console.log('ERROR:', error.message || error);
   });
 
+
+// For external CSS files
+app.use(express.static('resources'));
+
 // *****************************************************
 // <!-- Section 3 : App Settings -->
 // *****************************************************
@@ -62,8 +66,33 @@ app.get('/welcome', (req, res) => {
     res.json({status: 'success', message: 'Welcome!'});
   });
 
+// 
 
 // copy pasting lab 9 routes for testing purposes
+app.get('/register', (req, res) => {
+  res.render('pages/register'); // rendering the page gher 
+});
+
+// register will have multiple components, above is get, below is the post 
+// going to make a note of this so I remember, the async function is required here 
+app.post('/register', async (req, res) => {
+  //hash the password using bcrypt library
+const hash = await bcrypt.hash(req.body.password, 10);
+
+  // next item on the to do list is to take the username and password and insert them into the users table 
+  let username = req.body.username; // think this will be fine 
+
+  const submission =  `INSERT INTO users (username, password) VALUES( '${username}', '${hash}') `; // think we're supposed to insert the hashed value, but I am not sure 
+  db.any(submission)
+  .then((data) => {
+      res.status(200).redirect('/login'); // believe this is the most I am supposed to do here. 
+      // think I need to use the get route here, not sure if I need to do more 
+  })
+  .catch((err) => {
+      res.status(400).redirect('/register'); // think I am supposed to utilize the get routes, but not sure how to do that. 
+      // current survey says I don't need to do anything, will have to check about that. 
+  })
+});
 
 app.get('/login', (req, res) => {
     res.render('pages/login'); // this should be fine 
@@ -82,28 +111,35 @@ app.post('/login', async(req, res) => {
     db.any(userSelect).then(async (data)=>{
       user.username = data[0].username;
       user.password = data[0].password;
-      console.log(data);
-      console.log(user.username);
-      console.log(user.password);
+      // console.log(data);
+      // console.log(user.username);
+      // console.log(user.password);
       const passCheck = await bcrypt.compare(req.body.password, user.password); // needs to be put here for posterity
-       console.log(passCheck);
+     //  console.log(passCheck);
       // if statement makes sure that things will work just fine 
       if (passCheck ==false){
-          res.redirect('/login');
+          res
+          .body.message('invalid input')
+          .status(200)
+          .redirect('/login');
       } else {
         // below is the default code for the login side of things. 
         req.session.user = user;
         req.session.save();
         
          // goal is to redirect to the discover object before anything else 
+
         //res.redirect('/discover');
       }
 
     }).catch((err) => {
       console.log(err);
-      res.redirect("/login");
+      res
+      .status(400)
+      .redirect("/login");
     });
 });
+
 
 //Needs another page that doesnt render results for search
 app.get('/search', (req,res) =>{
@@ -134,6 +170,19 @@ app.post('/search', (req,res) =>{
     //res.render('pages/search', { books });
 });
 
+//for this branch, we will be adding a route for Bookpage, this should be a get, and should be able to take things correctly 
+app.get("/bookPage", function(req, res) {
+    //  going to use our database to get the thing done , external API call to google is expected -Brandon
+    const query = `SELECT * FROM books WHERE title = '${req.body.title}'`; // tentative query for now
+
+    // db.any query here 
+    db.any(query).then(
+      res.status(200).render('/bookPage', {})
+    ).catch(err => {
+
+    })
+}); 
+// also going to note, there will be a post route for adding to favorites, this will 
 
 // for testing purposes, leaving this here 
-module.exports = app.listen(3000);
+app.listen(3000);
