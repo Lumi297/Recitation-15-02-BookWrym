@@ -99,6 +99,7 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', async(req, res) => {
+  //res.json({status: 'success', message: 'Welcome!'});
   const user = {
     username: undefined,
     password: undefined,
@@ -125,8 +126,10 @@ app.post('/login', async(req, res) => {
         // below is the default code for the login side of things. 
         req.session.user = user;
         req.session.save();
+        
          // goal is to redirect to the discover object before anything else 
-        res.status(200);
+
+        //res.redirect('/discover');
       }
 
     }).catch((err) => {
@@ -135,6 +138,36 @@ app.post('/login', async(req, res) => {
       .status(400)
       .redirect("/login");
     });
+});
+
+
+//Needs another page that doesnt render results for search
+app.get('/search', (req,res) =>{
+  res.render('pages/search')
+})
+
+app.post('/search', (req,res) =>{
+  //checks if something is put in, if not defaults to fantasy
+  let title = req.body.query;
+  console.log(req.body.title)
+  if(title != undefined){
+    title  = req.body.title;
+  }else{
+    title = "fantasy";
+  }
+  //renders search page with title and author
+  const response = axios.get('https://www.googleapis.com/books/v1/volumes?q='+title+'&maxResults=10')
+  .then(results=>{
+    //console.log(results.data.items[0].volumeInfo.title)
+    const books = results.data.items || [];
+    res.render('pages/search', { books });
+  })
+    
+    //console.log(res.data))
+  .catch(err=>console.log(err))
+    //const books = response.data.items || [];
+    //console.log(books);
+    //res.render('pages/search', { books });
 });
 
 //for this branch, we will be adding a route for Bookpage, this should be a get, and should be able to take things correctly 
