@@ -35,6 +35,10 @@ db.connect()
     console.log('ERROR:', error.message || error);
   });
 
+
+// For external CSS files
+app.use(express.static('resources'));
+
 // *****************************************************
 // <!-- Section 3 : App Settings -->
 // *****************************************************
@@ -148,4 +152,4 @@ app.get("/bookPage", function(req, res) {
 // also going to note, there will be a post route for adding to favorites, this will 
 
 // for testing purposes, leaving this here 
-module.exports = app.listen(3000);
+app.listen(3000);
