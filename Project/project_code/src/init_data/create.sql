@@ -21,12 +21,18 @@ CREATE TABLE IF NOT EXISTS tags (
     tagId SERIAL PRIMARY KEY, 
     name VARCHAR(100), 
 );
+
+CREATE TABLE IF NOT EXISTS reviews(
+    reviewId SERIAL PRIMARY KEY,
+    rating INT,
+    body VARCHAR(500),
+)
 -- two tables below exist to help collect joins together based on the majority of the work put in. 
 CREATE TABLE IF NOT EXISTS users_to_books (
     username varchar(100) NOT NULL, 
     bookId INT NOT NULL, 
     FOREIGN KEY(username) REFERENCES users(username),
-    FOREIGN KEY(bookId) REFERENCES books(bookId)
+    FOREIGN KEY(bookId) REFERENCES books(bookId),
 ); 
 
 CREATE TABLE IF NOT EXISTS tags_to_books (
@@ -35,3 +41,17 @@ CREATE TABLE IF NOT EXISTS tags_to_books (
     FOREIGN KEY (tagId) REFERENCES tags(tagId),
     FOREIGN KEY (bookId) REFERENCES books(bookId),
 ); 
+
+CREATE TABLE IF NOT EXISTS reviews_to_books(
+    reviewId INT NOT NULL,
+    bookId INT NOT NULL,
+    FOREIGN KEY(bookId) REFERENCES books(bookId),
+    FOREIGN KEY(reviewId) REFERENCES reviews(reviewId),
+)
+
+CREATE TABLE IF NOT EXISTS users_to_reviews(
+    username VARCHAR(100) NOT NULL,
+    reviewId INT NOT NULL,
+    FOREIGN KEY(username) REFERENCES users(username),
+    FOREIGN KEY(reviewId) REFERENCES reviews(reviewId).
+)
