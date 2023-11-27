@@ -1,0 +1,60 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+<main>
+    <div class="container1">
+        <div class="fhalf">         
+            <div class="col sm-12">
+                <div class="row py-1">
+                    <h1>PlaceholderPlaceholderPlaceholder Placeholder</h1>
+                </div>
+                
+                <div class="row py-1">
+                    <p>Placeholder</p>
+                </div>
+
+                <div class="row py-1">
+                    <p>Placeholder</p>
+                </div>
+
+                <div class="row">
+                    <form action="/register" method="GET">
+                        <button type="submit" class="btn btn-link"  style="color: white;">Create account?</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="shalf">
+            <div class="content">
+                <form action="/login" method="POST">
+                    <div class="col sm-12">
+                        <div class="row py-1">
+                            <h1>Sign in</h1>
+                        </div>
+                        
+                        <div class="row py-1"> 
+                                <div class="form-row">
+                                    <input class='form-control' type="text" id="username" name="username" placeholder="username"/>
+                                </div>
+                        </div>
+        
+                        <div class="row py-1">
+                            <div class="form-row">
+                                <input class='form-control' type="text" id="password" name="password" placeholder="password"/>
+                            </div>
+                        </div>
+        
+                        <div class="row py-1">
+                            <button type="submit" class="btn btn-primary" id="login-register-button">Sign in</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</main>
+
+<%- include ('../partials/footer') %>
