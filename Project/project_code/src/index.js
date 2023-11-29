@@ -137,17 +137,42 @@ app.post('/login', async(req, res) => {
     });
 });
 
+// pasting Jeremy's search thingie to get an idea of how to use the API 
+//Needs another page that doesnt render results for search
+app.get('/search', (req,res) =>{
+  res.render('pages/search')
+})
+app.post('/search', (req,res) =>{
+  //checks if something is put in, if not defaults to fantasy
+  let title = req.body.query;
+  console.log(req.body.title)
+  if(title != undefined){
+    title  = req.body.title;
+  }else{
+    title = "fantasy";
+  }
+  //renders search page with title and author
+  const response = axios.get('https://www.googleapis.com/books/v1/volumes?q='+title+'&maxResults=10')
+  .then(results=>{
+    //console.log(results.data.items[0].volumeInfo.title)
+    const books = results.data.items || [];
+    res.render('pages/search', { books });
+  })
+   
+    //console.log(res.data))
+  .catch(err=>console.log(err))
+    //const books = response.data.items || [];
+    //console.log(books);
+});
 //for this branch, we will be adding a route for Bookpage, this should be a get, and should be able to take things correctly 
 app.get("/bookPage", function(req, res) {
     //  going to use our database to get the thing done , external API call to google is expected -Brandon
-    const query = `SELECT * FROM books WHERE title = '${req.body.title}'`; // tentative query for now
+    const indivQuery = `SELECT * FROM books WHERE title = '${req.body.title}'`; // tentative query for now
+    const pluralQuery = `SELECT books.bookID books.authorID books.image_url FROM books WHERE  `;
+    const axiosQuery = axios.get('https://www.googleapis.com/books/v1/volumes?q=inauthor:'+req.body.author+'&maxResults=5') ;
+    // going to need a db.any query gere 
 
-    // db.any query here 
-    db.any(query).then(
-      res.status(200).render('/bookPage', {})
-    ).catch(err => {
 
-    })
 }); 
 // also going to note, there will be a post route for adding to favorites, this will 
 
