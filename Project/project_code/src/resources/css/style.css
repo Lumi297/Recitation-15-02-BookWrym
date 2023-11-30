@@ -1,47 +1,84 @@
-.container1 {
-    position: relative;
-    overflow: hidden;
-    width: 950px;
+* {
+    font-family: 'Lato', sans-serif;
+}
+.wrapper{
+    background: white;
+    padding: 0 20px 0 20px;
+    padding-top: 20px;
+}
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+.row {
+    width: 900px;
     height: 550px;
-    margin: 50px auto 0;
-    border-radius: 30px 30px 30px 30px;
-    background-color: white;
-    box-shadow: rgba(150, 150, 165, 0.22) 0px 8px 24px;
-        .fhalf{
-            position: absolute;
-            left: 0px;
-            width: 37.5%;
-            min-width: 0px;
-            height: 100%;
-            padding: 20px 20px 0;
-            overflow-wrap: break-word;
+    border-radius: 10px;
+    background: white;
+    box-shadow: rgba(100, 100, 100, 0.25) 5px 5px 10px 0px;
+}
+.image {
+    background-image: url(https://upload.wikimedia.org/wikipedia/commons/d/df/Pile_of_books.jpg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: brightness(80%);
+    position: relative;
+    border-radius: 10px 0 0 10px;
+}
+.text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.text p{
+    font-size: 20px;
+    color: white;
+}
+.right{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.input {
+    width: 330px;
+    box-sizing: border-box;
+    h2 {
+        animation: fadeIn 500ms;
+    }
+    p {
+        padding-bottom: 40px;
+        animation: fadeIn 750ms;
+    }
+    div {
+        animation: fadeIn 1000ms;
+    }
+}
+.submit {
+    button {
+        border: none;
+        outline: none;
+        height: 40px;
+    }
+}
+.other {
+    padding: 10px 0 10px 0;
+    button {
+        border: none;
+        outline: none;
 
-            display: inline-block;
-            justify-content: center;
-            text-align: center;
-            align-items: center;
-
-            background-color: blueviolet;
-            color: white !important;
-        }
-        .shalf{
-            position: absolute;
-            right: 0px;
-            width: 62.5%;
-            min-width: 0px;
-            height: 100%;
-            padding: 20px 20px 0;
-            overflow-wrap: break-word;
-
-            display: flex;
-            justify-content: center;
-            text-align: center;
-            align-items: center;
-
-            background-color: white;
-        }
+        font-size: 15px;
+        text-decoration: underline;
+        color: darkslategrey;
+        background-color: white;
+    }
 }
 
-#login-register-button {
-    background-color: blueviolet !important;
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
