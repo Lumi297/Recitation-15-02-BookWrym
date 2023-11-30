@@ -168,12 +168,16 @@ app.post('/search', (req,res) =>{
 app.get("/bookPage", function(req, res) {
     //  going to use our database to get the thing done , external API call to google is expected -Brandon
     const pageQuery = `SELECT * FROM books WHERE title = '${req.body.title}'`; // tentative query for now
-   // const siteQuery = `SELECT books.bookID books.authorID books.image_url FROM books WHERE books.id = (SELECT  books.bookId FROM tags INNER JOIN tags_to_books ON books.id = tags_to_books.bookID INNER JOIN tags ON tags_to_books.tagId = tags.tagId GROUP BY books.bookId LIMIT 5); `;
-    const axiosQuery = axios.get('https://www.googleapis.com/books/v1/volumes?q=inauthor:'+req.body.author+'&maxResults=5') ;
+    const siteQuery = `SELECT books.bookID books.authorID books.image_url FROM books WHERE books.id = (SELECT  books.bookId FROM tags INNER JOIN tags_to_books ON books.id = tags_to_books.bookID INNER JOIN tags ON tags_to_books.tagId = tags.tagId GROUP BY books.bookId LIMIT 5); `;
+    // const axiosQuery = axios.get('https://www.googleapis.com/books/v1/volumes?q=inauthor:'+req.body.author+'&maxResults=5') ;
     // going to need a db.task query here 
     db.task('get-everything', task => {
       return task.batch([task.any(pageQuery), task.any(siteQuery)])
     })
+    .then(
+      // goal is to call axios object in here, and render everything with locals 
+
+    )
 
 
 }); 
