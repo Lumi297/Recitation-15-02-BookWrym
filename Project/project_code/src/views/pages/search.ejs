@@ -11,14 +11,14 @@
     <h1>Google Books Search</h1>
   
     <form action="/search" method="post">
-      <label for="query">query:</label>
+      <label for="query">query: </label>
       <input type="query" id="query" name="query" required>
       <button type="submit">Search</button>
     </form>
   
     <h2>Search Results</h2>
   
-    <% if (books.length > 0) { %>
+    <%if (books[0]!=undefined) { %>
       <ul>
         <% books.forEach(book => { %>
           <li>
