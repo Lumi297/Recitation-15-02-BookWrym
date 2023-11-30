@@ -141,23 +141,56 @@ app.post('/login', async(req, res) => {
 });
 
 
-//Needs another page that doesnt render results for search
-app.get('/search', (req,res) =>{
-  res.render('pages/search')
-})
-
 app.post('/search', (req,res) =>{
   //checks if something is put in, if not defaults to fantasy
-  let title = req.body.query;
-  console.log(req.body.title)
-  if(title != undefined){
-    title  = req.body.title;
+  let title = req.body.search;
+  let typeOf = req.body.selectCategory;
+  let numResults = req.body.numResults;
+  console.log(typeOf);
+  console.log(title);
+  console.log(numResults);
+  if(title == undefined){
+    title = "Fantasy"
   }else{
-    title = "fantasy";
+    //title = '"' + title.replace(/\s/g, '+') + '"'
+    title = '"' + title + '"'
+  }
+  console.log(title)
+  if(typeOf == "title"){
+    typeOf = ""
+  }else if(typeOf == "author"){
+    typeOf = "inauthor:"
+  }else{
+    typeOf = "subject:"
+  }
+  //renders search page with title and author
+  const response = axios.get('https://www.googleapis.com/books/v1/volumes?q='+typeOf+title+'&maxResults='+numResults)
+  .then(results=>{
+    console.log(results.data.items[0].volumeInfo.imageLinks)
+    const books = results.data.items || [];
+    res.render('pages/search', { books });
+  })
+    
+    //console.log(res.data))
+  .catch(err=>console.log(err))
+    //const books = response.data.items || [];
+    //console.log(books);
+    //res.render('pages/search', { books });
+});
+
+
+//mostly test
+//Could be used as default display?
+app.get('/search', (req,res) =>{
+  //checks if something is put in, if not defaults to fantasy
+  let title = req.body.query;
+  if(title == undefined){
+    title = "Fantasy"
   }
   //renders search page with title and author
   const response = axios.get('https://www.googleapis.com/books/v1/volumes?q='+title+'&maxResults=10')
   .then(results=>{
+    console.log(results.data.items[1].volumeInfo.imageLinks)
     //console.log(results.data.items[0].volumeInfo.title)
     const books = results.data.items || [];
     res.render('pages/search', { books });
