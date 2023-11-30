@@ -1,3 +1,4 @@
+
 .container1 {
     position: relative;
     overflow: hidden;
@@ -40,8 +41,4 @@
 
             background-color: white;
         }
-}
-
-#login-register-button {
-    background-color: blueviolet !important;
 }
