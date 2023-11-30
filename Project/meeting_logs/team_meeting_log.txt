@@ -22,3 +22,14 @@ Tue November 9, 11:45-12:15
 	i. Discussed finishing up lab, split up work for UAT cases and talked about implementing two more test cases on register
 	ii. Checked in on progress on the api as well as the search, welcome, and login pages
 	iii. We planned to meet friday to work on the project together
+Tue November 28th, 11:45-12:15
+	i. what have we been working on?
+		a. integration of database and connecting to database and API
+		b. Bookpage - where all book information will be stored
+		c. search function within website to find books via tags
+		d. working on front end animations
+	i. What were going to work on?
+		a. metrics for recomendation function -back end team
+		b. finishing website front end skeleton -front end team
+	iii. Next meeting on Wednsday at 2PM in EC to continue working together
+	
