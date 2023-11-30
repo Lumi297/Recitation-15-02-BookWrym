@@ -4,36 +4,14 @@
 
 const express = require('express'); // To build an application server or API
 const app = express();
-const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
-const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
+const database = require('./resources/js/database');
 
-// *****************************************************
-// <!-- Section 2 : Connect to DB -->
-// *****************************************************
 
-// database configuration
-const dbConfig = {
-  host: 'db', // the database server
-  port: 5432, // the database port
-  database: process.env.POSTGRES_DB, // the database name
-  user: process.env.POSTGRES_USER, // the user account to connect with
-  password: process.env.POSTGRES_PASSWORD, // the password of the user account
-};
-
-const db = pgp(dbConfig);
-
-// test your database
-db.connect()
-  .then(obj => {
-    console.log('Database connection successful'); // you can view this message in the docker compose logs
-    obj.done(); // success, release the connection;
-  })
-  .catch(error => {
-    console.log('ERROR:', error.message || error);
-  });
+// For external CSS files
+app.use(express.static('resources'));
 
 // *****************************************************
 // <!-- Section 3 : App Settings -->
@@ -95,6 +73,7 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', async(req, res) => {
+  //res.json({status: 'success', message: 'Welcome!'});
   const user = {
     username: undefined,
     password: undefined,
@@ -121,8 +100,10 @@ app.post('/login', async(req, res) => {
         // below is the default code for the login side of things. 
         req.session.user = user;
         req.session.save();
+        
          // goal is to redirect to the discover object before anything else 
-        res.status(200);
+
+        //res.redirect('/discover');
       }
 
     }).catch((err) => {
@@ -134,5 +115,37 @@ app.post('/login', async(req, res) => {
 });
 
 
+//Needs another page that doesnt render results for search
+app.get('/search', (req,res) =>{
+  const books = [];
+  res.render('pages/search', { books });
+})
+
+app.post('/search', async (req,res) =>{
+  //checks if something is put in, if not defaults to fantasy
+  let title = req.body.query;
+  console.log(req.body);
+  if(title == undefined){
+    title = "fantasy";
+  }
+  const books = await database.getBooks(title,10);
+  res.render('pages/search', { books:books });
+  //renders search page with title and author
+});
+
+//for this branch, we will be adding a route for Bookpage, this should be a get, and should be able to take things correctly 
+app.get("/bookPage", function(req, res) {
+    //  going to use our database to get the thing done , external API call to google is expected -Brandon
+    const query = `SELECT * FROM books WHERE title = '${req.body.title}'`; // tentative query for now
+
+    // db.any query here 
+    db.any(query).then(
+      res.status(200).render('/bookPage', {})
+    ).catch(err => {
+
+    })
+}); 
+// also going to note, there will be a post route for adding to favorites, this will 
+
 // for testing purposes, leaving this here 
-module.exports = app.listen(3000);
+/*module.exports = */app.listen(3000);

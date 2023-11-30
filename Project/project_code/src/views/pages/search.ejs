@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Books Search</title>
+</head>
+  
+  <body>
+    <h1>Google Books Search</h1>
+  
+    <form action="/search" method="post">
+      <label for="query">query: </label>
+      <input type="query" id="query" name="query" required>
+      <button type="submit">Search</button>
+    </form>
+  
+    <h2>Search Results</h2>
+  
+    <%if (books[0]!=undefined) { %>
+      <ul>
+        <% books.forEach(book => { %>
+          <li>
+            <strong><%= book.volumeInfo.title %></strong> by <%= book.volumeInfo.authors.join(', ') %>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p>No results found.</p>
+    <% } %>
+  </body>
+  
+</html>
