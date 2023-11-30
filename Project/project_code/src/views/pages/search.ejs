@@ -11,8 +11,21 @@
     <h1>Google Books Search</h1>
   
     <form action="/search" method="post">
-      <label for="query">query:</label>
-      <input type="query" id="query" name="query" required>
+      <label for="query">Query:</label>
+      <input type="query" id="search" name="search" required>
+      <label for="selectCategory">Search Type</label>
+      <select id="selectCategory" name ="selectCategory">
+        <option value ="title" selected>Title</option>
+        <option value ="author">Author</option>
+        <option value ="genre">Genre</option>
+      </select>
+
+      <label for="numResults">Search Type</label>
+      <select id="numResults" name ="numResults">
+        <option value ="10" selected>10</option>
+        <option value ="20">20</option>
+        <option value ="30">30</option>
+      </select>
       <button type="submit">Search</button>
     </form>
   
@@ -22,6 +35,12 @@
       <ul>
         <% books.forEach(book => { %>
           <li>
+            <% if (book.volumeInfo.imageLinks) { %>
+              <img src="<%= book.volumeInfo.imageLinks.thumbnail %>" alt="Cover">
+            <% } else { %>
+                <p>No thumbnail available</p>
+            <% } %>
+            
             <strong><%= book.volumeInfo.title %></strong> by <%= book.volumeInfo.authors.join(', ') %>
           </li>
         <% }) %>
