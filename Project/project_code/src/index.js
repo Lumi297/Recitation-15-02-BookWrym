@@ -4,36 +4,10 @@
 
 const express = require('express'); // To build an application server or API
 const app = express();
-const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
-const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
-
-// *****************************************************
-// <!-- Section 2 : Connect to DB -->
-// *****************************************************
-
-// database configuration
-const dbConfig = {
-  host: 'db', // the database server
-  port: 5432, // the database port
-  database: process.env.POSTGRES_DB, // the database name
-  user: process.env.POSTGRES_USER, // the user account to connect with
-  password: process.env.POSTGRES_PASSWORD, // the password of the user account
-};
-
-const db = pgp(dbConfig);
-
-// test your database
-db.connect()
-  .then(obj => {
-    console.log('Database connection successful'); // you can view this message in the docker compose logs
-    obj.done(); // success, release the connection;
-  })
-  .catch(error => {
-    console.log('ERROR:', error.message || error);
-  });
+const database = require('./resources/js/database');
 
 
 // For external CSS files
@@ -143,31 +117,20 @@ app.post('/login', async(req, res) => {
 
 //Needs another page that doesnt render results for search
 app.get('/search', (req,res) =>{
-  res.render('pages/search')
+  const books = [];
+  res.render('pages/search', { books });
 })
 
-app.post('/search', (req,res) =>{
+app.post('/search', async (req,res) =>{
   //checks if something is put in, if not defaults to fantasy
   let title = req.body.query;
-  console.log(req.body.title)
-  if(title != undefined){
-    title  = req.body.title;
-  }else{
+  console.log(req.body);
+  if(title == undefined){
     title = "fantasy";
   }
+  const books = await database.getBooks(title,10);
+  res.render('pages/search', { books:books });
   //renders search page with title and author
-  const response = axios.get('https://www.googleapis.com/books/v1/volumes?q='+title+'&maxResults=10')
-  .then(results=>{
-    //console.log(results.data.items[0].volumeInfo.title)
-    const books = results.data.items || [];
-    res.render('pages/search', { books });
-  })
-    
-    //console.log(res.data))
-  .catch(err=>console.log(err))
-    //const books = response.data.items || [];
-    //console.log(books);
-    //res.render('pages/search', { books });
 });
 
 //for this branch, we will be adding a route for Bookpage, this should be a get, and should be able to take things correctly 
@@ -185,4 +148,4 @@ app.get("/bookPage", function(req, res) {
 // also going to note, there will be a post route for adding to favorites, this will 
 
 // for testing purposes, leaving this here 
-app.listen(3000);
+/*module.exports = */app.listen(3000);
