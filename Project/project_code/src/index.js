@@ -68,6 +68,11 @@ app.get('/welcome', (req, res) => {
 
 // 
 
+// default
+app.get('/', (req, res) => {
+    res.redirect('/register');
+});
+
 // copy pasting lab 9 routes for testing purposes
 app.get('/register', (req, res) => {
   res.render('pages/register'); // rendering the page gher 
