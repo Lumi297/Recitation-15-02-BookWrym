@@ -10,11 +10,12 @@ INSERT INTO users (username, password) VALUES ('John doe', '12345');
 -- going to create a users table with username and password 
 -- following additional characters are going to exist: 
 -- tags, books, and the joining tables for all of them 
-CREATE  TABLE IF  NOT EXISTS books (
+CREATE  TABLE IF NOT EXISTS books (
     bookId PRIMARY KEY,
     author VARCHAR(100),
     title VARCHAR(100), 
     image_url VARCHAR(100), 
+    genre VARCHAR(100),
 );
 -- think the tags won't need anything else? 
 CREATE TABLE IF NOT EXISTS tags (

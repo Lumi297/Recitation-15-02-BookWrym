@@ -180,6 +180,7 @@ app.get("/bookPage", function(req, res) {
       const axiosQuery = axios.get('https://www.googleapis.com/books/v1/volumes?q=inauthor:'+req.body.author+'&maxResults=5')
       .then(results => {
         const books = results.data.items || []; // going by Jeremy's work, this is how we're doing it. 
+        res.status(200).render("pages/bookPage", { selectBook, similarBooks, books});
       })
     }
       // goal is to call axios object in here, and use res.json to call everything and get that in order 
