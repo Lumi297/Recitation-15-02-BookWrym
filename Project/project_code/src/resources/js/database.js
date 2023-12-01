@@ -49,8 +49,8 @@ module.exports = {
 
                             if (!existingBook) {
                                 // If the book doesn't exist, insert it into the books table
-                                const insertedBook = await db.one('INSERT INTO books (author, title, image_url, googleBookId) VALUES ($1, $2, $3, $4) RETURNING *', 
-                                [author, title, image_url, googleId]);
+                                const insertedBook = await db.one('INSERT INTO books (author, title, image_url, googleBookId) VALUES ($1, $2, $3, $4) RETURNING *',
+                                    [author, title, image_url, googleId]);
 
                                 // Now you can use the insertedBook variable to get the details of the inserted book
                                 console.log('Inserted Book:', insertedBook);
