@@ -174,14 +174,33 @@ app.get("/bookPage", function(req, res) {
     db.task('get-everything', task => {
       return task.batch([task.any(pageQuery), task.any(siteQuery)])
     })
-    .then(
-      // goal is to call axios object in here, and render everything with locals 
+    .then(function(data){
+      let selectBook = data[0][0]; // think this is how we do it 
+      let similarBooks = data[0][1];
+      const axiosQuery = axios.get('https://www.googleapis.com/books/v1/volumes?q=inauthor:'+req.body.author+'&maxResults=5')
+      .then(results => {
+        const books = results.data.items || []; // going by Jeremy's work, this is how we're doing it. 
+      })
+    }
+      // goal is to call axios object in here, and use res.json to call everything and get that in order 
+
 
     )
 
 
 }); 
 // also going to note, there will be a post route for adding to favorites, this will 
+app.post("/bookPage", function(req,res) {
 
+  const bookQuery = `select * from books where books.title = '${req.body.title}' returning books.bookId LIMIT 1`; 
+
+  // db.any will be sufficient 
+  db.any(bookQuery)
+  .then(function(data) {
+     const postquery = `insert into users_to_books( username, bookId) values ('${data[0][0].bookId}', '${req.session.user.username}' )`; 
+     // second db.any will be required? 
+     
+  })
+})
 // for testing purposes, leaving this here 
 app.listen(3000);
