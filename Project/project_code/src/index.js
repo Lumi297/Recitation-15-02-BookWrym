@@ -4,11 +4,12 @@
 
 const express = require('express'); // To build an application server or API
 const app = express();
-const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
-const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
+const database = require('./resources/js/database');
+const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
+
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -34,7 +35,6 @@ db.connect()
   .catch(error => {
     console.log('ERROR:', error.message || error);
   });
-
 
 // For external CSS files
 app.use(express.static('resources'));
@@ -63,10 +63,15 @@ app.use(
 
 // dummy route for testing and lab 11 purposes
 app.get('/welcome', (req, res) => {
-    res.json({status: 'success', message: 'Welcome!'});
-  });
+  res.json({ status: 'success', message: 'Welcome!' });
+});
 
 // 
+
+// default
+app.get('/', (req, res) => {
+  res.redirect('/register');
+});
 
 // copy pasting lab 9 routes for testing purposes
 app.get('/register', (req, res) => {
@@ -77,71 +82,76 @@ app.get('/register', (req, res) => {
 // going to make a note of this so I remember, the async function is required here 
 app.post('/register', async (req, res) => {
   //hash the password using bcrypt library
-const hash = await bcrypt.hash(req.body.password, 10);
+  const hash = await bcrypt.hash(req.body.password, 10);
 
   // next item on the to do list is to take the username and password and insert them into the users table 
   let username = req.body.username; // think this will be fine 
 
-  const submission =  `INSERT INTO users (username, password) VALUES( '${username}', '${hash}') `; // think we're supposed to insert the hashed value, but I am not sure 
+  const submission = `INSERT INTO users (username, password) VALUES( '${username}', '${hash}') `; // think we're supposed to insert the hashed value, but I am not sure 
   db.any(submission)
-  .then((data) => {
+    .then((data) => {
       res.status(200).redirect('/login'); // believe this is the most I am supposed to do here. 
       // think I need to use the get route here, not sure if I need to do more 
-  })
-  .catch((err) => {
+    })
+    .catch((err) => {
       res.status(400).redirect('/register'); // think I am supposed to utilize the get routes, but not sure how to do that. 
       // current survey says I don't need to do anything, will have to check about that. 
-  })
+    })
 });
 
 app.get('/login', (req, res) => {
-    res.render('pages/login'); // this should be fine 
+  res.render('pages/login'); // this should be fine 
 });
 
-app.post('/login', async(req, res) => {
+app.post('/login', async (req, res) => {
   //res.json({status: 'success', message: 'Welcome!'});
   const user = {
     username: undefined,
     password: undefined,
-};
-    // first things first, we need to go and get their appropriate methedology 
-    const userSelect = `SELECT * FROM users WHERE username = '${req.body.username}' `; // think the querty will return everything 
-    // above is a com
-    // think the trick with ths one is to do a db.any and then check with an if statement to see what is and is not true.
-    db.any(userSelect).then(async (data)=>{
-      user.username = data[0].username;
-      user.password = data[0].password;
-      // console.log(data);
-      // console.log(user.username);
-      // console.log(user.password);
-      const passCheck = await bcrypt.compare(req.body.password, user.password); // needs to be put here for posterity
-     //  console.log(passCheck);
-      // if statement makes sure that things will work just fine 
-      if (passCheck ==false){
-          res
-          .body.message('invalid input')
-          .status(200)
-          .redirect('/login');
-      } else {
-        // below is the default code for the login side of things. 
-        req.session.user = user;
-        req.session.save();
-        
-         // goal is to redirect to the discover object before anything else 
-
-        //res.redirect('/discover');
-      }
-
-    }).catch((err) => {
-      console.log(err);
+  };
+  // first things first, we need to go and get their appropriate methedology 
+  const userSelect = `SELECT * FROM users WHERE username = '${req.body.username}' `; // think the querty will return everything 
+  // above is a com
+  // think the trick with ths one is to do a db.any and then check with an if statement to see what is and is not true.
+  db.any(userSelect).then(async (data) => {
+    user.username = data[0].username;
+    user.password = data[0].password;
+    // console.log(data);
+    // console.log(user.username);
+    // console.log(user.password);
+    const passCheck = await bcrypt.compare(req.body.password, user.password); // needs to be put here for posterity
+    //  console.log(passCheck);
+    // if statement makes sure that things will work just fine 
+    if (passCheck == false) {
       res
+        .body.message('invalid input')
+        .status(200)
+        .redirect('/login');
+    } else {
+      // below is the default code for the login side of things. 
+      req.session.user = user;
+      req.session.save();
+
+      // goal is to redirect to the discover object before anything else 
+
+      //res.redirect('/discover');
+    }
+
+  }).catch((err) => {
+    console.log(err);
+    res
       .status(400)
       .redirect("/login");
-    });
+  });
 });
 
+app.get('/search', (req, res) => {
+  const books = [];
+  res.render('pages/search', { books });
+})
 
-app.post('/search', (req,res) =>{
+//Needs another page that doesnt render results for search
+app.post('/search', async (req, res) => {
   //checks if something is put in, if not defaults to fantasy
   let title = req.body.search;
   let typeOf = req.body.selectCategory;
@@ -149,73 +159,39 @@ app.post('/search', (req,res) =>{
   console.log(typeOf);
   console.log(title);
   console.log(numResults);
-  if(title == undefined){
+  if (title == undefined) {
     title = "Fantasy"
-  }else{
+  } else {
     //title = '"' + title.replace(/\s/g, '+') + '"'
     title = '"' + title + '"'
   }
   console.log(title)
-  if(typeOf == "title"){
+  if (typeOf == "title") {
     typeOf = ""
-  }else if(typeOf == "author"){
+  } else if (typeOf == "author") {
     typeOf = "inauthor:"
-  }else{
+  } else {
     typeOf = "subject:"
   }
-  //renders search page with title and author
-  const response = axios.get('https://www.googleapis.com/books/v1/volumes?q='+typeOf+title+'&maxResults='+numResults)
-  .then(results=>{
-    console.log(results.data.items[0].volumeInfo.imageLinks)
-    const books = results.data.items || [];
-    res.render('pages/search', { books });
-  })
-    
-    //console.log(res.data))
-  .catch(err=>console.log(err))
-    //const books = response.data.items || [];
-    //console.log(books);
-    //res.render('pages/search', { books });
-});
 
-
-//mostly test
-//Could be used as default display?
-app.get('/search', (req,res) =>{
-  //checks if something is put in, if not defaults to fantasy
-  let title = req.body.query;
-  if(title == undefined){
-    title = "Fantasy"
-  }
+  const books = await database.getBooks(typeOf + title, numResults);
+  res.render('pages/search', { books: books });
   //renders search page with title and author
-  const response = axios.get('https://www.googleapis.com/books/v1/volumes?q='+title+'&maxResults=10')
-  .then(results=>{
-    console.log(results.data.items[1].volumeInfo.imageLinks)
-    //console.log(results.data.items[0].volumeInfo.title)
-    const books = results.data.items || [];
-    res.render('pages/search', { books });
-  })
-    
-    //console.log(res.data))
-  .catch(err=>console.log(err))
-    //const books = response.data.items || [];
-    //console.log(books);
-    //res.render('pages/search', { books });
 });
 
 //for this branch, we will be adding a route for Bookpage, this should be a get, and should be able to take things correctly 
-app.get("/bookPage", function(req, res) {
-    //  going to use our database to get the thing done , external API call to google is expected -Brandon
-    const query = `SELECT * FROM books WHERE title = '${req.body.title}'`; // tentative query for now
+app.get("/bookPage", function (req, res) {
+  //  going to use our database to get the thing done , external API call to google is expected -Brandon
+  const query = `SELECT * FROM books WHERE title = '${req.body.title}'`; // tentative query for now
 
-    // db.any query here 
-    db.any(query).then(
-      res.status(200).render('/bookPage', {})
-    ).catch(err => {
+  // db.any query here 
+  db.any(query).then(
+    res.status(200).render('/bookPage', {})
+  ).catch(err => {
 
-    })
-}); 
+  })
+});
 // also going to note, there will be a post route for adding to favorites, this will 
 
 // for testing purposes, leaving this here 
-app.listen(3000);
+/*module.exports = */app.listen(3000);
