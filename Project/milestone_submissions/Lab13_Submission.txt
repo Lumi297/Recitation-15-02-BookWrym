@@ -1,1 +1,1 @@
-website link: http://recitation-15-team-02.eastus.cloudapp.azure.com:3000
+website link: http://recitation-15-team-02.eastus.cloudapp.azure.com:3000/search
