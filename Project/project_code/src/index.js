@@ -169,6 +169,7 @@ app.get("/bookPage", function(req, res) {
     //  going to use our database to get the thing done , external API call to google is expected -Brandon
     const pageQuery = `SELECT * FROM books WHERE title = '${req.body.title}'`; // tentative query for now
     const siteQuery = `SELECT books.bookID books.authorID books.image_url FROM books WHERE books.id = (SELECT  books.bookId FROM tags INNER JOIN tags_to_books ON books.id = tags_to_books.bookID INNER JOIN tags ON tags_to_books.tagId = tags.tagId GROUP BY books.bookId LIMIT 5); `;
+    //making a note of this, a 3rd queryt here might be required to load tags. 
     // const axiosQuery = axios.get('https://www.googleapis.com/books/v1/volumes?q=inauthor:'+req.body.author+'&maxResults=5') ;
     // going to need a db.task query here 
     db.task('get-everything', task => {
@@ -179,8 +180,8 @@ app.get("/bookPage", function(req, res) {
       let similarBooks = data[0][1];
       const axiosQuery = axios.get('https://www.googleapis.com/books/v1/volumes?q=inauthor:'+req.body.author+'&maxResults=5')
       .then(results => {
-        const books = results.data.items || []; // going by Jeremy's work, this is how we're doing it. 
-        res.status(200).render("pages/bookPage", { selectBook, similarBooks, books});
+        const authorBooks = results.data.items || []; // going by Jeremy's work, this is how we're doing it. 
+        res.status(200).render("pages/bookPage", { selectBook, similarBooks, authorBooks});
       })
     }
       // goal is to call axios object in here, and use res.json to call everything and get that in order 
@@ -192,15 +193,13 @@ app.get("/bookPage", function(req, res) {
 }); 
 // also going to note, there will be a post route for adding to favorites, this will 
 app.post("/bookPage", function(req,res) {
-
   const bookQuery = `select * from books where books.title = '${req.body.title}' returning books.bookId LIMIT 1`; 
-
   // db.any will be sufficient 
   db.any(bookQuery)
   .then(function(data) {
      const postquery = `insert into users_to_books( username, bookId) values ('${data[0][0].bookId}', '${req.session.user.username}' )`; 
      // second db.any will be required? 
-     
+     db.any(postquery).then(res.status(201).message('Book added to favorites'))
   })
 })
 // for testing purposes, leaving this here 
