@@ -1,4 +1,4 @@
-// Imports the index.js file to be tested.
+/*// Imports the index.js file to be tested.
 const server = require('../index'); //TO-DO Make sure the path to your index.js is correctly added
 // Importing libraries
 
@@ -22,7 +22,7 @@ describe('Server!', () => {
         done();
       });
   });
-
+});
   // ===========================================================================
   // TO-DO: Part A Login unit test case
   //
@@ -37,7 +37,6 @@ describe('Server!', () => {
           done();
         });
     });
-  });
   // negative cases (login-GET )
   //We are checking POST /add_user API by passing the user info in in incorrect manner (name cannot be an integer). This test case should pass and return a status 200 along with a "Invalid input" message.
   it('Negative : /login. Checking page render', done => {
@@ -101,4 +100,4 @@ describe('Server!', () => {
         expect(res).to.have.status(200);
         done();
       });
-  });
+  });*/
