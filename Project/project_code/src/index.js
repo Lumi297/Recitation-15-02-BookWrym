@@ -137,6 +137,20 @@ app.post('/login', async(req, res) => {
     });
 });
 
+// up next is the creation of a home page for the user: this should include user info, and a collection of books that they have 
+app.get("/homepage", (req,res) => {
+    
+  // req.session. user should show user name 
+  const userfavorites = `SELECT * FROM books INNER JOIN users_to_books ON books.bookId = users_to_books.bookId INNER JOIN users ON  users_to_books.username = users.username WHERE users.username = '${req.session.user.username}' `
+  db.any(userfavorites)
+  .then()
+  .catch((err) => {
+    console.log(err);
+    res
+    .status(400)
+  });
+
+});
 // pasting Jeremy's search thingie to get an idea of how to use the API 
 //Needs another page that doesnt render results for search
 app.get('/search', (req,res) =>{
@@ -182,7 +196,7 @@ app.get("/bookPage", function(req, res) {
       .then(results => {
         const authorBooks = results.data.items || []; // going by Jeremy's work, this is how we're doing it. 
         res.status(200).render("pages/bookPage", { selectBook, similarBooks, authorBooks});
-      })
+      }).catch((err) =>console.log(err))  
     }
       // goal is to call axios object in here, and use res.json to call everything and get that in order 
 
