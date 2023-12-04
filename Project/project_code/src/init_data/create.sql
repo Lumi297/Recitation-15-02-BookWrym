@@ -8,12 +8,11 @@ CREATE TABLE IF  NOT EXISTS users(
 -- tags, books, and the joining tables for all of them 
 
 CREATE  TABLE IF  NOT EXISTS books (
-    bookId SERIAL PRIMARY KEY,
+    bookId SERIAL SERIAL PRIMARY KEY,
     author VARCHAR(100),
     title VARCHAR(100), 
     image_url VARCHAR(255),
     googleBookId VARCHAR(50) NOT NULL
-
 );
 -- think the tags won't need anything else? 
 CREATE TABLE IF NOT EXISTS tags (

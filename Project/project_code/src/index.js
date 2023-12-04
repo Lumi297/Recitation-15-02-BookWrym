@@ -87,7 +87,7 @@ app.post('/register', async (req, res) => {
   // next item on the to do list is to take the username and password and insert them into the users table 
   let username = req.body.username; // think this will be fine 
 
-  const submission = `INSERT INTO users (username, password) VALUES( '${username}', '${hash}') `; // think we're supposed to insert the hashed value, but I am not sure 
+  const submission =  `INSERT INTO users (username, password) VALUES( '${username}', '${hash}') `; // think we're supposed to insert the hashed value, but I am not sure 
   db.any(submission)
     .then((data) => {
       res.status(200).redirect('/login'); // believe this is the most I am supposed to do here. 
@@ -183,14 +183,19 @@ app.post('/search', async (req, res) => {
 app.get("/homepage", (req,res) => {
     
   // req.session. user should show user name 
-  const userfavorites = `SELECT * FROM books INNER JOIN users_to_books ON books.bookId = users_to_books.bookId INNER JOIN users ON  users_to_books.username = users.username WHERE users.username = '${req.session.user.username}' `
-  db.any(userfavorites)
-  .then()
-  .catch((err) => {
-    console.log(err);
-    res
-    .status(400)
-  });
+  // const userfavorites = `SELECT * FROM books INNER JOIN users_to_books ON books.bookId = users_to_books.bookId INNER JOIN users ON  users_to_books.username = users.username WHERE users.username = 'userman' `
+  // db.any(userfavorites)
+  // .then((data) => {
+  //   res
+  //   .status(200)
+  //   .render('pages/homepage');
+  // })
+  // .catch((err) => {
+  //   console.log(err);
+  //   res
+  //   .status(400)
+
+  // });
 
 });
 // pasting Jeremy's search thingie to get an idea of how to use the API 
@@ -234,4 +239,4 @@ app.post("/bookPage", function(req,res) {
   })
 })
 // for testing purposes, leaving this here 
-/*module.exports = */app.listen(3000);
+app.listen(3000);
