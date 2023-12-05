@@ -8,33 +8,6 @@ const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
 const database = require('./resources/js/database');
-const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
-
-
-// *****************************************************
-// <!-- Section 2 : Connect to DB -->
-// *****************************************************
-
-// database configuration
-const dbConfig = {
-  host: 'db', // the database server
-  port: 5432, // the database port
-  database: process.env.POSTGRES_DB, // the database name
-  user: process.env.POSTGRES_USER, // the user account to connect with
-  password: process.env.POSTGRES_PASSWORD, // the password of the user account
-};
-
-const db = pgp(dbConfig);
-
-// test your database
-db.connect()
-  .then(obj => {
-    console.log('Database connection successful'); // you can view this message in the docker compose logs
-    obj.done(); // success, release the connection;
-  })
-  .catch(error => {
-    console.log('ERROR:', error.message || error);
-  });
 
 // For external CSS files
 app.use(express.static('resources'));
@@ -81,22 +54,25 @@ app.get('/register', (req, res) => {
 // register will have multiple components, above is get, below is the post 
 // going to make a note of this so I remember, the async function is required here 
 app.post('/register', async (req, res) => {
-  //hash the password using bcrypt library
-  const hash = await bcrypt.hash(req.body.password, 10);
+  try {
+    // Hash the password using bcrypt library
+    const hash = await bcrypt.hash(req.body.password, 10);
 
-  // next item on the to do list is to take the username and password and insert them into the users table 
-  let username = req.body.username; // think this will be fine 
+    // Take the username and hashed password and insert them into the users table
+    const username = req.body.username;
 
-  const submission =  `INSERT INTO users (username, password) VALUES( '${username}', '${hash}') `; // think we're supposed to insert the hashed value, but I am not sure 
-  db.any(submission)
-    .then((data) => {
-      res.status(200).redirect('/login'); // believe this is the most I am supposed to do here. 
-      // think I need to use the get route here, not sure if I need to do more 
-    })
-    .catch((err) => {
-      res.status(400).redirect('/register'); // think I am supposed to utilize the get routes, but not sure how to do that. 
-      // current survey says I don't need to do anything, will have to check about that. 
-    })
+    await database.register(username, hash);
+    res.status(200).redirect('/login');
+  } catch (error) {
+    if (error.message.includes('duplicate key value')) {
+      // Duplicate username error handling
+      res.status(400).render('pages/register', { error: 'Username already exists. Choose a different one.' });
+    } else {
+      // General error handling
+      console.error(error);
+      res.status(500).render('pages/register', { error: 'Internal Server Error' });
+    }
+  }
 });
 
 app.get('/login', (req, res) => {
@@ -104,45 +80,16 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-  //res.json({status: 'success', message: 'Welcome!'});
-  const user = {
-    username: undefined,
-    password: undefined,
-  };
-  // first things first, we need to go and get their appropriate methedology 
-  const userSelect = `SELECT * FROM users WHERE username = '${req.body.username}' `; // think the querty will return everything 
-  // above is a com
-  // think the trick with ths one is to do a db.any and then check with an if statement to see what is and is not true.
-  db.any(userSelect).then(async (data) => {
-    user.username = data[0].username;
-    user.password = data[0].password;
-    // console.log(data);
-    // console.log(user.username);
-    // console.log(user.password);
-    const passCheck = await bcrypt.compare(req.body.password, user.password); // needs to be put here for posterity
-    //  console.log(passCheck);
-    // if statement makes sure that things will work just fine 
-    if (passCheck == false) {
-      res
-        .body.message('invalid input')
-        .status(200)
-        .redirect('/login');
-    } else {
-      // below is the default code for the login side of things. 
-      req.session.user = user;
-      req.session.save();
+  try {
+    const username = req.body.username;
+    const password = req.body.password;
 
-      // goal is to redirect to the discover object before anything else 
-
-      //res.redirect('/discover');
-    }
-
-  }).catch((err) => {
-    console.log(err);
-    res
-      .status(400)
-      .redirect("/login");
-  });
+    const user = await database.login(username, password);
+    res.status(200).redirect('/search');
+  } catch (error) {
+    console.log(error);
+    res.status(401).render('pages/login', { error: 'Invalid username or password' });
+  }
 });
 
 app.get('/search', (req, res) => {
@@ -198,45 +145,10 @@ app.get("/homepage", (req,res) => {
   // });
 
 });
-// pasting Jeremy's search thingie to get an idea of how to use the API 
-//Needs another page that doesnt render results for search
-app.get('/search', (req,res) =>{
-  res.render('pages/search')
-})
-app.post('/search', (req,res) =>{
-  //checks if something is put in, if not defaults to fantasy
-  let title = req.body.query;
-  console.log(req.body.title)
-  if(title != undefined){
-    title  = req.body.title;
-  }else{
-    title = "fantasy";
-  }
-  //renders search page with title and author
-  const response = axios.get('https://www.googleapis.com/books/v1/volumes?q='+title+'&maxResults=10')
-  .then(results=>{
-    //console.log(results.data.items[0].volumeInfo.title)
-    const books = results.data.items || [];
-    res.render('pages/search', { books });
-  })
-   
-    //console.log(res.data))
-  .catch(err=>console.log(err))
-    //const books = response.data.items || [];
-    //console.log(books);
-});
-//for this branch, we will be adding a route for Bookpage, this should be a get, and should be able to take things correctly 
 
 // also going to note, there will be a post route for adding to favorites, this will 
-app.post("/bookPage", function(req,res) {
-  const bookQuery = `select * from books where books.title = '${req.body.title}' returning books.bookId LIMIT 1`; 
-  // db.any will be sufficient 
-  db.any(bookQuery)
-  .then(function(data) {
-     const postquery = `insert into users_to_books( username, bookId) values ('${data[0][0].bookId}', '${req.session.user.username}' )`; 
-     // second db.any will be required? 
-     db.any(postquery).then(res.status(201).message('Book added to favorites'))
-  })
-})
+app.get("/bookPage", function(req,res) {
+  
+});
 // for testing purposes, leaving this here 
 app.listen(3000);
