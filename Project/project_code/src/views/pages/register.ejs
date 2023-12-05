@@ -1,0 +1,66 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+<main>
+    <div class="wrapper">
+        <div class="container main">
+            <div class="row">
+            
+              <div class="col-md-6 image">
+                <div class="text">
+                  <p>Start reading today...</p>
+                </div>
+              </div>
+              
+              <div class="col-md-6 right">
+                <form class="input active" action="/register" method="POST" id="sign-up">
+                    <h2 class="text-center pt-3">Sign up</h2>
+                    <p class="text-center text-muted lead">It's Free to Join</p>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa fa-user"></i></span>
+                        <input type="text" class="form-control" placeholder="Username" id="username" name="username"/>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa fa-user"></i></span>
+                        <input type="password" class="form-control" placeholder="Password" id="password" name="password"/>
+                    </div>
+
+                    <div class="d-grid submit">
+                        <button type="submit">Sign up</button>
+                    </div>
+                  
+                    <div class="d-grid other">
+                        <button type="button" onclick="signinpage()">Already have an account?</button>
+                    </div>
+                </form>
+
+                <form class="input" action="/login" method="POST" id="sign-in" style="display: none;">
+                    <h2 class="text-center pt-3">Sign in</h2>
+                    <p class="text-center text-muted lead">Welcome Back</p>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa fa-user"></i></span>
+                        <input type="text" class="form-control" placeholder="Username" id="username" name="username"/>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa fa-user"></i></span>
+                        <input type="password" class="form-control" placeholder="Password" id="password" name="password"/>
+                    </div>
+
+                    <div class="d-grid submit">
+                        <button type="submit">Sign in</button>
+                    </div>
+                  
+                    <div class="d-grid other">
+                        <button type="button" onclick="signuppage()">Need an account? Sign up</button>
+                    </div>
+                </form>
+              </div>
+           </div>
+        </div>
+    </div>
+</main>
+
+<%- include ('../partials/footer') %>
