@@ -10,7 +10,7 @@ CREATE  TABLE IF  NOT EXISTS books (
     bookId SERIAL PRIMARY KEY,
     author VARCHAR(100),
     title VARCHAR(100), 
-    image_url VARCHAR(100),
+    image_url VARCHAR(255),
     googleBookId VARCHAR(50) NOT NULL
 );
 -- think the tags won't need anything else? 

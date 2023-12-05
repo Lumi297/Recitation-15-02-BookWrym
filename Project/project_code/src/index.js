@@ -8,7 +8,33 @@ const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
 const database = require('./resources/js/database');
+const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
 
+
+// *****************************************************
+// <!-- Section 2 : Connect to DB -->
+// *****************************************************
+
+// database configuration
+const dbConfig = {
+  host: 'db', // the database server
+  port: 5432, // the database port
+  database: process.env.POSTGRES_DB, // the database name
+  user: process.env.POSTGRES_USER, // the user account to connect with
+  password: process.env.POSTGRES_PASSWORD, // the password of the user account
+};
+
+const db = pgp(dbConfig);
+
+// test your database
+db.connect()
+  .then(obj => {
+    console.log('Database connection successful'); // you can view this message in the docker compose logs
+    obj.done(); // success, release the connection;
+  })
+  .catch(error => {
+    console.log('ERROR:', error.message || error);
+  });
 
 // For external CSS files
 app.use(express.static('resources'));
@@ -41,6 +67,11 @@ app.get('/welcome', (req, res) => {
 });
 
 // 
+
+// default
+app.get('/', (req, res) => {
+  res.redirect('/register');
+});
 
 // copy pasting lab 9 routes for testing purposes
 app.get('/register', (req, res) => {
@@ -112,21 +143,36 @@ app.post('/login', async (req, res) => {
   });
 });
 
-
-//Needs another page that doesnt render results for search
 app.get('/search', (req, res) => {
   const books = [];
   res.render('pages/search', { books });
 })
 
+//Needs another page that doesnt render results for search
 app.post('/search', async (req, res) => {
   //checks if something is put in, if not defaults to fantasy
-  let title = req.body.query;
-  console.log(req.body);
+  let title = req.body.search;
+  let typeOf = req.body.selectCategory;
+  let numResults = req.body.numResults;
+  console.log(typeOf);
+  console.log(title);
+  console.log(numResults);
   if (title == undefined) {
-    title = "fantasy";
+    title = "Fantasy"
+  } else {
+    //title = '"' + title.replace(/\s/g, '+') + '"'
+    title = '"' + title + '"'
   }
-  const books = await database.getBooks(title, 10);
+  console.log(title)
+  if (typeOf == "title") {
+    typeOf = ""
+  } else if (typeOf == "author") {
+    typeOf = "inauthor:"
+  } else {
+    typeOf = "subject:"
+  }
+
+  const books = await database.getBooks(typeOf + title, numResults);
   res.render('pages/search', { books: books });
   //renders search page with title and author
 });
