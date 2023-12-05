@@ -49,8 +49,8 @@ module.exports = {
 
                             if (!existingBook) {
                                 // If the book doesn't exist, insert it into the books table
-                                const insertedBook = await db.one('INSERT INTO books (author, title, image_url, googleBookId) VALUES ($1, $2, $3, $4) RETURNING *', 
-                                [author, title, image_url, googleId]);
+                                const insertedBook = await db.one('INSERT INTO books (author, title, image_url, googleBookId) VALUES ($1, $2, $3, $4) RETURNING *',
+                                    [author, title, image_url, googleId]);
 
                                 // Now you can use the insertedBook variable to get the details of the inserted book
                                 console.log('Inserted Book:', insertedBook);
@@ -70,6 +70,26 @@ module.exports = {
                 .catch(err => {
                     console.log(err);
                     reject(err);
+                });
+        });
+    },
+    register: function (username, hash) {
+        return new Promise((resolve, reject) => {
+            const submission = `INSERT INTO users (username, password) VALUES( '${username}', '${hash}') `;
+
+            db.oneOrNone(submission)
+                .then((user) => {
+                    if (user) {
+                        // User successfully registered
+                        resolve(user);
+                    } else {
+                        // Registration failed (user with the same username might already exist)
+                        reject(new Error('User registration failed'));
+                    }
+                })
+                .catch((error) => {
+                    // Handle any database-related errors
+                    reject(error);
                 });
         });
     }
