@@ -126,11 +126,29 @@ app.post('/search', async (req, res) => {
   //renders search page with title and author
 });
 
-//for this branch, we will be adding a route for Bookpage, this should be a get, and should be able to take things correctly 
-app.get("/bookPage", function (req, res) {
+// up next is the creation of a home page for the user: this should include user info, and a collection of books that they have 
+app.get("/homepage", (req,res) => {
+    
+  // req.session. user should show user name 
+  // const userfavorites = `SELECT * FROM books INNER JOIN users_to_books ON books.bookId = users_to_books.bookId INNER JOIN users ON  users_to_books.username = users.username WHERE users.username = 'userman' `
+  // db.any(userfavorites)
+  // .then((data) => {
+  //   res
+  //   .status(200)
+  //   .render('pages/homepage');
+  // })
+  // .catch((err) => {
+  //   console.log(err);
+  //   res
+  //   .status(400)
+
+  // });
 
 });
-// also going to note, there will be a post route for adding to favorites, this will 
 
+// also going to note, there will be a post route for adding to favorites, this will 
+app.get("/bookPage", function(req,res) {
+  
+});
 // for testing purposes, leaving this here 
-/*module.exports = */app.listen(3000);
+app.listen(3000);
