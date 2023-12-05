@@ -3,6 +3,7 @@
 // *****************************************************
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
 const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
+const bcrypt = require('bcrypt'); //  To hash passwords
 // database configuration
 const dbConfig = {
     host: 'db', // the database server
@@ -72,5 +73,51 @@ module.exports = {
                     reject(err);
                 });
         });
-    }
+    },
+    register: function (username, hash) {
+        return new Promise((resolve, reject) => {
+            const submission = `INSERT INTO users (username, password) VALUES( '${username}', '${hash}') RETURNING *`;
+
+            db.oneOrNone(submission)
+                .then((user) => {
+                    if (user) {
+                        // User successfully registered
+                        resolve(user);
+                    } else {
+                        // Registration failed (user with the same username might already exist)
+                        reject(new Error('User registration failed'));
+                    }
+                })
+                .catch((error) => {
+                    // Handle any database-related errors
+                    reject(error);
+                });
+        });
+    },
+    /**
+   * Authenticates a user by checking the provided username and password against the database.
+   * @param {String} username - The username to check.
+   * @param {String} password - The password to check.
+   * @returns {Promise<JSON>} - Resolves with user information if authentication is successful.
+   */
+  login: function (username, password) {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT * FROM users WHERE username = '${username}'`;
+
+      db.oneOrNone(query)
+        .then((user) => {
+          if (user && bcrypt.compareSync(password, user.password)) {
+            // Passwords match, user authenticated
+            resolve(user);
+          } else {
+            // Either user not found or password doesn't match
+            reject(new Error('Invalid username or password'));
+          }
+        })
+        .catch((error) => {
+          // Handle any database-related errors
+          reject(error);
+        });
+    });
+  }
 };

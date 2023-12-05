@@ -1,0 +1,19 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User's Homepage</title>
+</head>
+<body>
+    <h1>Welcome, <%= user %>!</h1>
+    <h2>Your Favorite Books:</h2>
+    <ul>
+        <% books.forEach(function(book) { %>
+            <li><%= book.title %> - <%= book.author %></li>
+        <% }); %>
+    </ul>
+</body>
+</html>
+
+<%- include ('../partials/footer') %>
