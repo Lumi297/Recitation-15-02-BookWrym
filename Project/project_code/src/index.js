@@ -34,6 +34,15 @@ app.use(
   })
 );
 
+const auth = (req,res,next) =>{
+  if(!req.session.user&&req.url!="/login"&&req.url!="/register"){
+    return res.redirect("/login");
+  }
+  next();
+};
+
+app.use(auth);
+
 // dummy route for testing and lab 11 purposes
 app.get('/welcome', (req, res) => {
   res.json({ status: 'success', message: 'Welcome!' });
@@ -85,6 +94,8 @@ app.post('/login', async (req, res) => {
     const password = req.body.password;
 
     const user = await database.login(username, password);
+    req.session.user = user;
+    req.session.save();
     res.status(200).redirect('/search');
   } catch (error) {
     console.log(error);

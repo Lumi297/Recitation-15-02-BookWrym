@@ -1,8 +1,4 @@
 # need to include node_modules and .env 
-<<<<<<< HEAD
-=======
-# need to include node_modules and .env 
->>>>>>> main
 # Logs
 logs
 *.log
@@ -108,4 +104,5 @@ dist
 
 # TernJS port file
 .tern-port
+Project/project_code/src/package-lock.json
 Project/project_code/src/package-lock.json
