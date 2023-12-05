@@ -1,0 +1,25 @@
+<%- include ('../partials/header') %> 
+<%- include ('../partials/menu') %> 
+<main class = "container">
+    <centre><h1>Welcome User!</h1> </centre>
+    <!-- replace user with JSON obbject 1 -->
+
+    <!-- up next is the collection of books that have been published -->
+    <div class = "row">
+        
+            <% for (let i = 0; i < 5; i++){ %>
+                <div class = "col-md-5">
+                    <div class = "card">
+                        <!-- source should be the  -->
+                        <img class = "card-image-top" src = "../../resources/img/stockCover.jpg">
+                        <div class="card-body">
+                            <h3 class = "card-title"> Book title </h3>
+                            <p class = "card-text"> author name here </p>
+                        </div>
+                    </div>
+                 </div>
+            <% } %> 
+    </div>
+</main>
+
+<%- include ('../partials/footer') %> 

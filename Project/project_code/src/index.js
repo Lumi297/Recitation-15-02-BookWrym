@@ -23,9 +23,9 @@ const dbConfig = {
   user: process.env.POSTGRES_USER, // the user account to connect with
   password: process.env.POSTGRES_PASSWORD, // the password of the user account
 };
-
+// console.log("db 1");
 const db = pgp(dbConfig);
-
+// console.log("db 2");
 // test your database
 db.connect()
   .then(obj => {
@@ -179,6 +179,10 @@ app.post('/search', async (req, res) => {
   //renders search page with title and author
 });
 
+// homepage should display the username as well as any books they have stored up. 
+app.get('/homepage', function (req, res) {
+  res.render("pages/homepage");
+});
 //for this branch, we will be adding a route for Bookpage, this should be a get, and should be able to take things correctly 
 app.get("/bookPage", function (req, res) {
   //  going to use our database to get the thing done , external API call to google is expected -Brandon
@@ -186,7 +190,7 @@ app.get("/bookPage", function (req, res) {
 
   // db.any query here 
   db.any(query).then(
-    res.status(200).render('/bookPage', {})
+    res.status(200).render('/bookPage', {result1: data[0], result2: data})
   ).catch(err => {
 
   })
@@ -194,4 +198,4 @@ app.get("/bookPage", function (req, res) {
 // also going to note, there will be a post route for adding to favorites, this will 
 
 // for testing purposes, leaving this here 
-/*module.exports = */app.listen(3000);
+module.exports = app.listen(3000);
