@@ -67,6 +67,19 @@ async function addBookToUser(bookId, username) {
 }
 
 /**
+ * searches tags_to_books to find all tags relevant to one section or another 
+ * @param {int} bookId - using book id for now to send tings back
+ * @return {promise<JSON[]>} similarBooks - returns a JSON array of books   
+ */
+async function getTagsbyBook(bookId) { 
+    try{
+
+    } catch(error) {
+
+    }
+}
+
+/**
  * Searches users_to_books and returns list of GoogleBookIds
  * @param {string} username - User's username.
  * @return {Promise<string[]>} - Resolves with an array of GoogleBookIds.
@@ -103,10 +116,10 @@ async function getBook(googleBookId) {
     }
 }
 /**
- * 
+ *  getBooksbyTag queries our data base and searches for 5 books that correspond with a given tag. 
  * @param {*} query 
  * @param {*} numResults 
- * @returns {JSON[]}
+ * @returns {promise<JSON[]>} - should return a JSON array of books. 
  */
 async function getBooksbyTag(subject, numResults){
     try{
