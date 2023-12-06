@@ -23,9 +23,9 @@ const dbConfig = {
   user: process.env.POSTGRES_USER, // the user account to connect with
   password: process.env.POSTGRES_PASSWORD, // the password of the user account
 };
-// console.log("db 1");
+
 const db = pgp(dbConfig);
-// console.log("db 2");
+
 // test your database
 db.connect()
   .then(obj => {
@@ -61,6 +61,15 @@ app.use(
   })
 );
 
+const auth = (req,res,next) =>{
+  if(!req.session.user&&req.url!="/login"&&req.url!="/register"){
+    return res.redirect("/login");
+  }
+  next();
+};
+
+app.use(auth);
+
 // dummy route for testing and lab 11 purposes
 app.get('/welcome', (req, res) => {
   res.json({ status: 'success', message: 'Welcome!' });
@@ -81,22 +90,25 @@ app.get('/register', (req, res) => {
 // register will have multiple components, above is get, below is the post 
 // going to make a note of this so I remember, the async function is required here 
 app.post('/register', async (req, res) => {
-  //hash the password using bcrypt library
-  const hash = await bcrypt.hash(req.body.password, 10);
+  try {
+    // Hash the password using bcrypt library
+    const hash = await bcrypt.hash(req.body.password, 10);
 
-  // next item on the to do list is to take the username and password and insert them into the users table 
-  let username = req.body.username; // think this will be fine 
+    // Take the username and hashed password and insert them into the users table
+    const username = req.body.username;
 
-  const submission = `INSERT INTO users (username, password) VALUES( '${username}', '${hash}') `; // think we're supposed to insert the hashed value, but I am not sure 
-  db.any(submission)
-    .then((data) => {
-      res.status(200).redirect('/login'); // believe this is the most I am supposed to do here. 
-      // think I need to use the get route here, not sure if I need to do more 
-    })
-    .catch((err) => {
-      res.status(400).redirect('/register'); // think I am supposed to utilize the get routes, but not sure how to do that. 
-      // current survey says I don't need to do anything, will have to check about that. 
-    })
+    await database.register(username, hash);
+    res.status(200).redirect('/login');
+  } catch (error) {
+    if (error.message.includes('duplicate key value')) {
+      // Duplicate username error handling
+      res.status(400).render('pages/register', { error: 'Username already exists. Choose a different one.' });
+    } else {
+      // General error handling
+      console.error(error);
+      res.status(500).render('pages/register', { error: 'Internal Server Error' });
+    }
+  }
 });
 
 app.get('/login', (req, res) => {
@@ -104,45 +116,18 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-  //res.json({status: 'success', message: 'Welcome!'});
-  const user = {
-    username: undefined,
-    password: undefined,
-  };
-  // first things first, we need to go and get their appropriate methedology 
-  const userSelect = `SELECT * FROM users WHERE username = '${req.body.username}' `; // think the querty will return everything 
-  // above is a com
-  // think the trick with ths one is to do a db.any and then check with an if statement to see what is and is not true.
-  db.any(userSelect).then(async (data) => {
-    user.username = data[0].username;
-    user.password = data[0].password;
-    // console.log(data);
-    // console.log(user.username);
-    // console.log(user.password);
-    const passCheck = await bcrypt.compare(req.body.password, user.password); // needs to be put here for posterity
-    //  console.log(passCheck);
-    // if statement makes sure that things will work just fine 
-    if (passCheck == false) {
-      res
-        .body.message('invalid input')
-        .status(200)
-        .redirect('/login');
-    } else {
-      // below is the default code for the login side of things. 
-      req.session.user = user;
-      req.session.save();
+  try {
+    const username = req.body.username;
+    const password = req.body.password;
 
-      // goal is to redirect to the discover object before anything else 
-
-      //res.redirect('/discover');
-    }
-
-  }).catch((err) => {
-    console.log(err);
-    res
-      .status(400)
-      .redirect("/login");
-  });
+    const user = await database.login(username, password);
+    req.session.user = user;
+    req.session.save();
+    res.status(200).redirect('/search');
+  } catch (error) {
+    console.log(error);
+    res.status(401).render('pages/login', { error: 'Invalid username or password' });
+  }
 });
 
 app.get('/search', (req, res) => {
@@ -196,6 +181,8 @@ app.get("/bookPage", function (req, res) {
   })
 });
 // also going to note, there will be a post route for adding to favorites, this will 
-
+app.get("/bookPage", function(req,res) {
+  
+});
 // for testing purposes, leaving this here 
 module.exports = app.listen(3000);

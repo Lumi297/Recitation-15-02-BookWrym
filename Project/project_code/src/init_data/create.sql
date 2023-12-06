@@ -6,8 +6,9 @@ CREATE TABLE IF  NOT EXISTS users(
 -- going to create a users table with username and password 
 -- following additional characters are going to exist: 
 -- tags, books, and the joining tables for all of them 
+
 CREATE  TABLE IF  NOT EXISTS books (
-    bookId SERIAL PRIMARY KEY,
+    bookId SERIAL SERIAL PRIMARY KEY,
     author VARCHAR(100),
     title VARCHAR(100), 
     image_url VARCHAR(255),
