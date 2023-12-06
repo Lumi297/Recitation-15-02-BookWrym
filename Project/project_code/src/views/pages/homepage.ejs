@@ -1,33 +1,32 @@
-<!-- goal here is to combine with footer and header to get a WIP snapshot, and figure out the specific methedology in question -->
-<%- include ('../partials/head') %> 
-<%- include ('../partials/menu ') %> 
+<%- include ('../partials/header') %> 
+<%- include ('../partials/menu') %> 
 <main>
 
-    <!-- goal: display a page with username and their own personal book colection  -->
+    
     <div class = "container">
         <div class = "row">
-            <!-- making a note of this, will be trying to render a page with  -->
-            <h1> Welcome (USER INSERT HERE)! </h1>
+            
+            <h1> Welcome <%- user.username %>! </h1>
         </div>
         <div class = "row">
-            <!-- for loop will be here, let's assume that there will be five books for now -->
-            <!-- <%- data.foreach(book) -->
+            
+            
             <table class = "table">
                 <tr>
-                <!-- <%- data.foreach(book) -->
-                <% for (let i = 0; i < 5; i++) { %>  
+                
+                <% books.forEach( book => { %>  
                     <td>
                         <div class = "card">
-                            <img class = "card-image-top" src = "../../resources/img/stock_book_image.png" max-width = "100%" height = "auto"> 
+                            <img class = "card-image-top" src = "<%- book.volumeInfo.imageLinks.thumbnail %>" max-width = "100%" height = "auto"> 
                             <div class = "card-body">
                                 <div class = "row">
-                                    <h1> book title </h1>
+                                    <h1><%- book.volumeInfo.title %></h1>
                                 </div>
-                                <h6>Author</h6>
+                                <h6><%- book.volumeInfo.authors.join(', ') %></h6>
                             </div>
                         </div>
                     </td>
-                <% } %>
+                <% }); %>
                 
                 </tr>
             </table>
