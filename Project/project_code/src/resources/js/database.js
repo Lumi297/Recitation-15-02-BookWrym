@@ -102,6 +102,26 @@ async function getBook(googleBookId) {
         throw error;
     }
 }
+/**
+ * 
+ * @param {*} query 
+ * @param {*} numResults 
+ * @returns {JSON[]}
+ */
+async function getBooksbyTag(subject, numResults){
+    try{
+        const query  = `SELECT * FROM books INNER JOIN tags_to_books ON books.bookId = tags_to_books.bookId INNER JOIN tags on tags_to_books.tagId = tags.tagId where tags.name = '${subject}' LIMIT '${numResults}'`;
+    
+    const results = await db.any(query); 
+
+    return results;
+
+    } catch(error) {
+        console.error('problem getting right subject', error);
+        throw error; 
+    }
+
+}
 
 function getBooks(query, numResults) {
     return new Promise((resolve, reject) => {
@@ -212,6 +232,7 @@ module.exports = {
     register: register,
     login: login,
     getBook: getBook,
+    getBooksbyTag: getBooksbyTag,
     getUserBookIds: getUserBookIds,
     addBooktoUser: addBookToUser
 };
