@@ -51,16 +51,76 @@ async function addCategoryToBook(bookId, category) {
     }
 }
 
+/**
+ * adds item to users_to_books table
+ * @param {string} bookId 
+ * @param {string} username 
+ */
+async function addBookToUser(bookId, username) {
+    try {
+        // Insert the book into the users_to_books table
+        await db.none('INSERT INTO users_to_books (username, bookId) VALUES ($1, $2)', [username, bookId]);
+    } catch (error) {
+        console.error('Error adding book to user:', error);
+        throw error;
+    }
+}
+
+/**
+ * Searches users_to_books and returns list of GoogleBookIds
+ * @param {string} username - User's username.
+ * @return {Promise<string[]>} - Resolves with an array of GoogleBookIds.
+ */
+async function getUserBookIds(username) {
+    try {
+        // Query the users_to_books table for books associated with the user
+        const userBooks = await db.any('SELECT bookId FROM users_to_books WHERE username = $1', [username]);
+
+        // Map the bookIds to corresponding googleBookIds
+        const googleBookIds = await Promise.all(userBooks.map(async (book) => {
+            const bookDetails = await db.one('SELECT googleBookId FROM books WHERE bookId = $1', [book.bookid]);
+            return bookDetails.googlebookid;
+        }));
+
+        return googleBookIds;
+    } catch (error) {
+        console.error('Error getting user books:', error);
+        throw error;
+    }
+}
+
+/**
+ * uses google books api in order to return json object
+ * @param {string} googleBookId 
+ */
+async function getBook(googleBookId) {
+    try {
+        const response = await axios.get(`https://www.googleapis.com/books/v1/volumes/${googleBookId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error getting book details:', error);
+        throw error;
+    }
+}
+
 function getBooks(query, numResults) {
     return new Promise((resolve, reject) => {
         axios.get(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=${numResults}`)
             .then(async results => {
                 const books = results.data.items;
+                console.log(books);
                 //add book info to database
                 for (const book of books) {
+                    console.log(book);
                     const title = book.volumeInfo.title;
                     const author = book.volumeInfo.authors.join(', ');
-                    const image_url = book.volumeInfo.imageLinks.thumbnail;
+                    var image_url = 'No Image URL';
+                    try{
+                        image_url = book.volumeInfo.imageLinks.thumbnail;
+                    }
+                    catch{
+                        console.log("No Image URL found for book: "+title);
+                    }
                     const googleId = book.id;
                     const categories = book.volumeInfo.categories;
 
@@ -81,7 +141,6 @@ function getBooks(query, numResults) {
                         }
                     } catch (error) {
                         console.error('Error inserting book:', error);
-                        reject(error); // Reject the promise if there's an error
                     }
                 }
                 resolve(books);
@@ -89,6 +148,55 @@ function getBooks(query, numResults) {
             .catch(err => {
                 console.log(err);
                 reject(err);
+            });
+    });
+}
+
+function register(username, hash) {
+    return new Promise((resolve, reject) => {
+        const submission = `INSERT INTO users (username, password) VALUES( '${username}', '${hash}') RETURNING *`;
+
+        db.oneOrNone(submission)
+            .then((user) => {
+                if (user) {
+                    console.log(user);
+                    // User successfully registered
+                    resolve(user);
+                } else {
+                    // Registration failed (user with the same username might already exist)
+                    reject(new Error('User registration failed'));
+                }
+            })
+            .catch((error) => {
+                // Handle any database-related errors
+                reject(error);
+            });
+    });
+}
+
+/**
+   * Authenticates a user by checking the provided username and password against the database.
+   * @param {String} username - The username to check.
+   * @param {String} password - The password to check.
+   * @returns {Promise<JSON>} - Resolves with user information if authentication is successful.
+   */
+function login(username, password) {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT * FROM users WHERE username = '${username}'`;
+
+        db.oneOrNone(query)
+            .then((user) => {
+                if (user && bcrypt.compareSync(password, user.password)) {
+                    // Passwords match, user authenticated
+                    resolve(user);
+                } else {
+                    // Either user not found or password doesn't match
+                    reject(new Error('Invalid username or password'));
+                }
+            })
+            .catch((error) => {
+                // Handle any database-related errors
+                reject(error);
             });
     });
 }
@@ -101,51 +209,9 @@ module.exports = {
      * @returns {Promise<JSON>}
      */
     getBooks: getBooks,
-    register: function (username, hash) {
-        return new Promise((resolve, reject) => {
-            const submission = `INSERT INTO users (username, password) VALUES( '${username}', '${hash}') RETURNING *`;
-
-            db.oneOrNone(submission)
-                .then((user) => {
-                    if (user) {
-                        console.log(user);
-                        // User successfully registered
-                        resolve(user);
-                    } else {
-                        // Registration failed (user with the same username might already exist)
-                        reject(new Error('User registration failed'));
-                    }
-                })
-                .catch((error) => {
-                    // Handle any database-related errors
-                    reject(error);
-                });
-        });
-    },
-    /**
-   * Authenticates a user by checking the provided username and password against the database.
-   * @param {String} username - The username to check.
-   * @param {String} password - The password to check.
-   * @returns {Promise<JSON>} - Resolves with user information if authentication is successful.
-   */
-    login: function (username, password) {
-        return new Promise((resolve, reject) => {
-            const query = `SELECT * FROM users WHERE username = '${username}'`;
-
-            db.oneOrNone(query)
-                .then((user) => {
-                    if (user && bcrypt.compareSync(password, user.password)) {
-                        // Passwords match, user authenticated
-                        resolve(user);
-                    } else {
-                        // Either user not found or password doesn't match
-                        reject(new Error('Invalid username or password'));
-                    }
-                })
-                .catch((error) => {
-                    // Handle any database-related errors
-                    reject(error);
-                });
-        });
-    }
+    register: register,
+    login: login,
+    getBook: getBook,
+    getUserBookIds: getUserBookIds,
+    addBooktoUser: addBookToUser
 };

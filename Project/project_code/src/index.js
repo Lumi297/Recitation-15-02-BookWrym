@@ -96,7 +96,7 @@ app.post('/login', async (req, res) => {
     const user = await database.login(username, password);
     req.session.user = user;
     req.session.save();
-    res.status(200).redirect('/search');
+    res.status(200).redirect('/homepage');
   } catch (error) {
     console.log(error);
     res.status(401).render('pages/login', { error: 'Invalid username or password' });
@@ -138,28 +138,21 @@ app.post('/search', async (req, res) => {
 });
 
 // up next is the creation of a home page for the user: this should include user info, and a collection of books that they have 
-app.get("/homepage", (req,res) => {
-    
-  // req.session. user should show user name 
-  // const userfavorites = `SELECT * FROM books INNER JOIN users_to_books ON books.bookId = users_to_books.bookId INNER JOIN users ON  users_to_books.username = users.username WHERE users.username = 'userman' `
-  // db.any(userfavorites)
-  // .then((data) => {
-  //   res
-  //   .status(200)
-  //   .render('pages/homepage');
-  // })
-  // .catch((err) => {
-  //   console.log(err);
-  //   res
-  //   .status(400)
-
-  // });
-
+app.get("/homepage", async(req,res) => {
+  const userBookIds = await database.getUserBookIds(req.session.user.username);
+  const books = await Promise.all(userBookIds.map(async (id) =>{
+    const book = await database.getBook(id);
+    return book;
+  }));
+  res.render('pages/homePage',{books:books,user:req.session.user});
 });
 
 // also going to note, there will be a post route for adding to favorites, this will 
-app.get("/bookPage", function(req,res) {
-  
+app.get("/bookPage", async function(req,res) {
+  console.log(req.session.user);
+  const book = await database.getbook();
+  console.log(userBooks);
+  res.render('pages/bookPage',{book: book,user:req.session.user});
 });
 // for testing purposes, leaving this here 
 app.listen(3000);
