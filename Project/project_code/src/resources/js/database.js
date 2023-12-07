@@ -68,12 +68,12 @@ async function addBookToUser(bookId, username) {
 
 /**
  * searches tags_to_books to find all tags relevant to one section or another 
- * @param {int} bookId - using book id for now to send tings back
+ * @param {int} googleBookId - using book id for now to send tings back
  * @return {promise<JSON[]>} similarBooks - returns a JSON array of books   
  */
-async function getTagsbyBook(bookId) { 
+async function getTagsbyBook(googleBookId) { 
     try{
-        const query = `SELECT * FROM tags INNER JOIN tags_to_books ON tags.tagId = tags_to_books.tagId INNER JOIN books ON tags_to_books.bookId = books.bookId WHERE books.bookId = '${bookId}'`; 
+        const query = `SELECT * FROM tags INNER JOIN tags_to_books ON tags.tagId = tags_to_books.tagId INNER JOIN books ON tags_to_books.bookId = books.bookId WHERE books.googleBookId = '${googleBookId}'`; 
         const results = await db.any(query);
         return results;
     } catch(error) {
@@ -122,24 +122,29 @@ function getBook(googleBookId) {
 }
 
 /**
- *  getBooksbyTag queries our data base and searches for 5 books that correspond with a given tag. 
+ *  getBooksbyTag queries our data base and searches for 5 google book ID's that correspond with a given tag. 
  * @param {*} query 
  * @param {*} numResults 
- * @returns {promise<JSON[]>} - should return a JSON array of books. 
+ * @returns {promise<string[]>} an array of GoogleBookIDs
  */
-async function getBooksbyTag(subject, numResults){
-    try{
-        const query  = `SELECT * FROM books INNER JOIN tags_to_books ON books.bookId = tags_to_books.bookId INNER JOIN tags on tags_to_books.tagId = tags.tagId where tags.name = '${subject}' LIMIT '${numResults}'`;
-    
-        const results = await db.any(query); 
+async function getBooksbyTag(subject, numResults) {
+    try {
+        // Query the books table for books associated with the given tag
+        const query = `
+            SELECT DISTINCT ON (books.googleBookId) books.googleBookId
+            FROM books
+            INNER JOIN tags_to_books ON books.bookId = tags_to_books.bookId
+            INNER JOIN tags ON tags_to_books.tagId = tags.tagId
+            WHERE tags.name = $1
+            LIMIT $2`;
+
+        const results = await db.map(query, [subject, numResults], (row) => row.googlebookid);
 
         return results;
-
-    } catch(error) {
-        console.error('problem getting right subject', error);
-        throw error; 
+    } catch (error) {
+        console.error('Problem getting GoogleBookIds by tag:', error);
+        throw error;
     }
-
 }
 
 function getBooks(query, numResults) {
@@ -147,10 +152,8 @@ function getBooks(query, numResults) {
         axios.get(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=${numResults}`)
             .then(async results => {
                 const books = results.data.items;
-                console.log(books);
                 //add book info to database
                 for (const book of books) {
-                    console.log(book);
                     const title = book.volumeInfo.title;
                     const author = book.volumeInfo.authors.join(', ');
                     var image_url = 'No Image URL';

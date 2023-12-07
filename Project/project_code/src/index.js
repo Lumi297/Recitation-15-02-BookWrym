@@ -148,14 +148,31 @@ app.get("/homepage", async (req, res) => {
 });
 
 // also going to note, there will be a post route for adding to favorites, this will 
-app.get("/bookPage/:bookID", async function(req,res) {
-  const book = await database.getBook(req.params.bookID);
-  const bookAuthor = book.volumeInfo.authors[0];
-  const authorRec = await database.getBooks("inauthor:"+bookAuthor,5); // collecting the author info for the other side of things 
-  
-  // up next is to try and get relevant tags for the book 
-  
-  res.render('pages/bookPage',{book:book, recommendations:authorRec})
+app.get("/bookPage/:bookID", async function(req, res) {
+  try {
+    const book = await database.getBook(req.params.bookID);
+    const bookAuthor = book.volumeInfo.authors[0];
+    const authorRec = await database.getBooks("inauthor:" + bookAuthor, 5);
+
+    const category = book.volumeInfo.categories[0];
+
+    // Get array of GoogleBook IDs and map to array of books using database.getBook
+    const googleBookIds = await database.getBooksbyTag(category);
+
+    // Map each GoogleBookID to its corresponding book details
+    const tagRec = await Promise.all(googleBookIds.map(async (googleBookId) => {
+      return await database.getBook(googleBookId);
+    }));
+
+    const recommendations = [...authorRec,...tagRec];
+
+    console.log(recommendations);
+
+    res.render('pages/bookPage', { book: book, recommendations: recommendations});
+  } catch (error) {
+    console.error('Error in /bookPage route:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 // for testing purposes, leaving this here 
 module.exports = app.listen(3000);
