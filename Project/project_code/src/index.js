@@ -149,12 +149,13 @@ app.get("/homepage", async (req, res) => {
 
 // also going to note, there will be a post route for adding to favorites, this will 
 app.get("/bookPage", async function(req,res) {
-  const book = await database.getBook(req.body.book.bookId);
+  const book = await database.getBook(req.param.bookId);
   const bookAuthor = req.body.book.author;
   const authorRec = await database.getBooks("inauthor:"+bookAuthor,5); // collecting the author info for the other side of things 
   
   // up next is to try and get relevant tags for the book 
-  
+  const tagCheck = await database.getTagsbyBook()
+  const siteRec = await database.getBooksbyTag
 
 
 });
