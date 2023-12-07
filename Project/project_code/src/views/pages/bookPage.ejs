@@ -1,38 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
+<<<<<<< HEAD
+<%- include ('../partials/header') %>
+    <%- include ('../partials/menu') %>
+        <main>
 
-<header>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Books Search</title>
-  <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
-        crossorigin="anonymous"
-    />
-  <link rel="stylesheet" href="./css/search.css" type="text/css">
-  <link rel="stylesheet" href="./css/bookpage.css" type="text/css">
-  <link rel="stylesheet" href="./css/nav.css" type="text/css">
-  <script src="./js/script.js"> </script>
-</header>
-<%- include ('../partials/menu') %>
+            <div class="container">
+                <div class="card-group">
+                    <div class="card">
+                        <!-- going to leave .css stuff untouched for now,this is me attempting to visualize things.  -->
+                        <img class="card-image-top" src="<%- book.volumeInfo.imageLinks.thumbnail %>" alt="book cover">
+                        <div class="card-body">
+                            <div class="row">
+                                <h1 class="card-title"><%- book.volumeInfo.title %></h1>
+                            </div>
+                            <div class="row">
+                                <h2><%- book.volumeInfo.authors.join(', ') %> </h2>
+=======
+<!-- goal here is to combine with footer and header to get a WIP snapshot, and figure out the specific methedology in question -->
+<%- include ('../partials/header') %> 
+<%- include ('../partials/menu') %> 
+<main>
+    
+    <div class = "container"> 
+        <!-- looking at the wireframe, going to have a card with book image and title -->
+            <div class = "card-group">
+                <div class = "card">
+                    <!-- going to leave .css stuff untouched for now,this is me attempting to visualize things.  -->
+                    <img class = "card-image-top" src = "https://upload.wikimedia.org/wikipedia/en/thumb/7/7a/Harry_Potter_and_the_Philosopher%27s_Stone_banner.jpg/330px-Harry_Potter_and_the_Philosopher%27s_Stone_banner.jpg" alt = "book cover">
+                    <div class = "card-body">
+                        <div class = "row">
+                            <h1 class = "card-title">Harry Potter and the Sorcerer's stone</h1>
+                        </div>
+                        <div class = "row">
+                            <h2>J.K. Rowling </h2>
+>>>>>>> ca738049283588515a04fc26b52cdb9281441154
+                        </div>
+                      
 
-<body>
-    <main>
-        <div class="wrapper">
-            <div class="container main">
-                <div class="box">
-                    <div class="left">
-                        <div class="content"></div>
                     </div>
+                    <!-- going to make a note of this here, 
+                    things to make sure we get from api 
+                        - Book image url (should be stored in there)
+                        - Book title (should also be stored in there)
+                        something up for debate is if we will need to call this into the database or not. 
+                    -->
 
-                    <div class="center">
-                        <div class="content"></div>
-                    </div>
+                </div>
+                <div class = "Card">
+                    <!-- this is where we put everything in the second column down -->
+                    <h2 class = "card-title">Applied tags </h2>
+                    <!-- maybe use for loop to apply things here?  -->
+                    <% for(let i = 0; i < tags.length; i++)  { %>
+                        <p><%- tags[i].name %></p>
+                    <% } %>
 
-                    <div class="right">
-                        <div class="content"></div>
+                </div>
+                <div class = "card">
+                    <!-- this card section is intended to show books from the same author, debating how we want to order this,  -->
+                    <h1> Also by this author</h1>
+                    <!-- think we would use ejs to write out a for loop showing work from this author,  -->
+<<<<<<< HEAD
+                    <div class = "col sm">
+                        <% recommendations.forEach( book => { %>
+                        <div class = "card">
+                            <% if (book.volumeInfo.imageLinks) { %>
+                                <img class = "card-image-top" src = "<%- book.volumeInfo.imageLinks.thumbnail %>" max-width = "100%" height = "auto"> 
+                                <% } else { %>
+                                  <p>No thumbnail available</p>
+                                  <% } %>
+                            <div class = "card-body">
+                                <div class = "row">
+                                    <h1><%- book.volumeInfo.title %></h1>
+                                </div>
+                                <h6> <%- book.volumeInfo.authors.join(' , ') %></h6>
+=======
+                    <div class = "col">
+                        <% authorCol.forEach( book => {%>
+                        <div class = "card">
+                            <img class = "card-image-top">
+                            <div class = "card-body">
+
+
+                            <h2 class = "card-title"></h2>
+
+>>>>>>> ca738049283588515a04fc26b52cdb9281441154
+                            </div>
+
+                        </div>
+<<<<<<< HEAD
+                        <% }); %>
+=======
+
+>>>>>>> ca738049283588515a04fc26b52cdb9281441154
                     </div>
                 </div>
             </div>
