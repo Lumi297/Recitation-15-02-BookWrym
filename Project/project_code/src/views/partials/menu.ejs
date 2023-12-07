@@ -1,33 +1,26 @@
 
 <header>
-    <nav class="navbar navbar-expand-sm border-bottom">
-      <div class="container">
-        <button
-          class="navbar-toggler ms-auto"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbar-collapse"
-          aria-controls="navbar"
-          aria-expanded="false"
-          aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbar-collapse">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <!-- TO-DO: For Discover, add a <a> tag with an attribute href to call the '/discover' API -->
-
-                <a class="nav-link" href="/discover">Discover</a>
-            </li>
-          </ul>
-          <div class="nav-item me-1">
-            <!-- TO-DO: For Logout, add a <a> tag with an attribute href to call the '/logout API -->
-
-                <a class = "nav-link" href = "/logout" method = "GET">Logout </a>
-          </div>
-          
-
-        </div>
-      </div>
-    </nav>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand">BookWrym</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarMenu">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a id="homePageButton" class="nav-link" href="/homepage">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item active">
+          <a id="bookPageButton" class="nav-link" href="/bookpage">Books</a>
+        </li>
+        <li class="nav-item active">
+          <a id="searchButton" class="nav-link" href="/search">Search</a>
+        </li>
+        <li class="nav-item active">
+          <a id="accountButton" class="nav-link" href="/account">Account</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
    </header>
