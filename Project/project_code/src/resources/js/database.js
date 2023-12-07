@@ -121,11 +121,6 @@ async function getBook(googleBookId) {
     });
 }
 
-function getBookCategories(googleBookId) {
-    return new Promise(async (resolve, reject) => {
-        const categories = await db.any('SELECT tagId FROM tags_to_books WHERE username = $1', [username]);
-    });
-}
 /**
  *  getBooksbyTag queries our data base and searches for 5 books that correspond with a given tag. 
  * @param {*} query 

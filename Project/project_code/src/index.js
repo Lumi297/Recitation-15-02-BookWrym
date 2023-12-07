@@ -148,15 +148,14 @@ app.get("/homepage", async (req, res) => {
 });
 
 // also going to note, there will be a post route for adding to favorites, this will 
-app.get("/bookPage", async function(req,res) {
-  const book = await database.getBook(req.body.book.bookId);
-  const bookAuthor = req.body.book.author;
+app.get("/bookPage/:bookID", async function(req,res) {
+  const book = await database.getBook(req.params.bookID);
+  const bookAuthor = book.volumeInfo.authors[0];
   const authorRec = await database.getBooks("inauthor:"+bookAuthor,5); // collecting the author info for the other side of things 
   
   // up next is to try and get relevant tags for the book 
   
-
-
+  res.render('pages/bookPage',{book:book, recommendations:authorRec})
 });
 // for testing purposes, leaving this here 
 module.exports = app.listen(3000);
