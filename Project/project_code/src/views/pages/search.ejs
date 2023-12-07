@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include ('../partials/header') %> 
+<%- include ('../partials/menu') %> 
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Books Search</title>
-</head>
 
 <body>
   <h1>Google Books Search</h1>
@@ -46,10 +41,12 @@
                 </strong> by <%= book.volumeInfo.authors.join(', ') %>
           </li>
         <% }) %>
-      </ul>
-    <% } else { %>
-      <p>No results found.</p>
-    <% } %>
-  </body>
-  
+      <% } else { %>
+        <p>No results found.</p>
+      <% } %>
+    </div>
+  </div>
+</body>
 </html>
+
+<%- include ('../partials/footer') %>
