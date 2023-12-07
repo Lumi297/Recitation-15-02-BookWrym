@@ -35,7 +35,7 @@ app.use(
 );
 
 const auth = (req, res, next) => {
-  if (!req.session.user && req.url != "/login" && req.url != "/register") {
+  if (!req.session.user && req.url != "/login" && req.url != "/register"&&req.url!="/search") {
     return res.redirect("/login");
   }
   next();
@@ -96,7 +96,7 @@ app.post('/login', async (req, res) => {
     const user = await database.login(username, password);
     req.session.user = user;
     req.session.save();
-    res.status(200).redirect('/search');
+    res.status(200).redirect('/homepage');
   } catch (error) {
     console.log(error);
     res.status(200).render('pages/login', { error: 'Invalid username or password' });
@@ -105,7 +105,7 @@ app.post('/login', async (req, res) => {
 
 app.get('/search', (req, res) => {
   const books = [];
-  res.render('pages/homepage', { books });
+  res.render('pages/search', { books });
 })
 
 //Needs another page that doesnt render results for search
