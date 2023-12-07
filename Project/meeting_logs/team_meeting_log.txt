@@ -32,4 +32,11 @@ Tue November 28th, 11:45-12:15
 		a. metrics for recomendation function -back end team
 		b. finishing website front end skeleton -front end team
 	iii. Next meeting on Wednsday at 2PM in EC to continue working together
+Tue December 5th, 7:30-8:15pm
+	i. what have we been working on?
+		a. worked on formatting the website as well as resolving issues on the back end
+	ii. What we're going to work on?
+		a. fix js files for the database -back end team
+		b. work on search and book page functions -front end team
+	iii. Next meeting tomorrow Wenesday, time and location (TBD)
 	

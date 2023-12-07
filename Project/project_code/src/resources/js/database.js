@@ -67,6 +67,22 @@ async function addBookToUser(bookId, username) {
 }
 
 /**
+ * searches tags_to_books to find all tags relevant to one section or another 
+ * @param {int} bookId - using book id for now to send tings back
+ * @return {promise<JSON[]>} similarBooks - returns a JSON array of books   
+ */
+async function getTagsbyBook(bookId) { 
+    try{
+        const query = `SELECT * FROM tags INNER JOIN tags_to_books ON tags.tagId = tags_to_books.tagId INNER JOIN books ON tags_to_books.bookId = books.bookId WHERE books.bookId = '${bookId}'`; 
+        const results = await db.any(query);
+        return results;
+    } catch(error) {
+        console.error('problem loading tags for this book', error);
+        throw error; 
+    }
+}
+
+/**
  * Searches users_to_books and returns list of GoogleBookIds
  * @param {string} username - User's username.
  * @return {Promise<string[]>} - Resolves with an array of GoogleBookIds.
@@ -105,10 +121,25 @@ function getBook(googleBookId) {
     });
 }
 
-function getBookCategories(googleBookId) {
-    return new Promise(async (resolve, reject) => {
-        const categories = await db.any('SELECT tagId FROM tags_to_books WHERE username = $1', [username]);
-    });
+/**
+ *  getBooksbyTag queries our data base and searches for 5 books that correspond with a given tag. 
+ * @param {*} query 
+ * @param {*} numResults 
+ * @returns {promise<JSON[]>} - should return a JSON array of books. 
+ */
+async function getBooksbyTag(subject, numResults){
+    try{
+        const query  = `SELECT * FROM books INNER JOIN tags_to_books ON books.bookId = tags_to_books.bookId INNER JOIN tags on tags_to_books.tagId = tags.tagId where tags.name = '${subject}' LIMIT '${numResults}'`;
+    
+        const results = await db.any(query); 
+
+        return results;
+
+    } catch(error) {
+        console.error('problem getting right subject', error);
+        throw error; 
+    }
+
 }
 
 function getBooks(query, numResults) {
@@ -220,6 +251,8 @@ module.exports = {
     register: register,
     login: login,
     getBook: getBook,
+    getTagsbyBook: getTagsbyBook,
+    getBooksbyTag: getBooksbyTag,
     getUserBookIds: getUserBookIds,
     addBooktoUser: addBookToUser
 };
