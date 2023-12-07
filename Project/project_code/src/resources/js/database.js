@@ -52,14 +52,27 @@ async function addCategoryToBook(bookId, category) {
 }
 
 /**
- * adds item to users_to_books table
- * @param {string} bookId 
- * @param {string} username 
+ * Adds item to users_to_books table.
+ * @param {string} googleBookId - The Google Book ID.
+ * @param {string} username - The username.
+ * @returns {Promise<void>} 
  */
-async function addBookToUser(bookId, username) {
+async function addBookToUser(googleBookId, username) {
     try {
-        // Insert the book into the users_to_books table
-        await db.none('INSERT INTO users_to_books (username, bookId) VALUES ($1, $2)', [username, bookId]);
+        // Find the corresponding bookId for the given googleBookId
+        const book = await db.oneOrNone('SELECT bookId FROM books WHERE googleBookId = $1', [googleBookId]);
+
+        if (book) {
+            // Check if the entry already exists in users_to_books
+            const existingEntry = await db.oneOrNone('SELECT * FROM users_to_books WHERE username = $1 AND bookId = $2', [username, book.bookid]);
+
+            if (!existingEntry) {
+                // Insert the book into the users_to_books table
+                await db.none('INSERT INTO users_to_books (username, bookId) VALUES ($1, $2)', [username, book.bookid]);
+            }
+        } else {
+            console.error('Book with Google Book ID not found:', googleBookId);
+        }
     } catch (error) {
         console.error('Error adding book to user:', error);
         throw error;
@@ -71,14 +84,14 @@ async function addBookToUser(bookId, username) {
  * @param {int} googleBookId - using book id for now to send tings back
  * @return {promise<JSON[]>} similarBooks - returns a JSON array of books   
  */
-async function getTagsbyBook(googleBookId) { 
-    try{
-        const query = `SELECT * FROM tags INNER JOIN tags_to_books ON tags.tagId = tags_to_books.tagId INNER JOIN books ON tags_to_books.bookId = books.bookId WHERE books.googleBookId = '${googleBookId}'`; 
+async function getTagsbyBook(googleBookId) {
+    try {
+        const query = `SELECT * FROM tags INNER JOIN tags_to_books ON tags.tagId = tags_to_books.tagId INNER JOIN books ON tags_to_books.bookId = books.bookId WHERE books.googleBookId = '${googleBookId}'`;
         const results = await db.any(query);
         return results;
-    } catch(error) {
+    } catch (error) {
         console.error('problem loading tags for this book', error);
-        throw error; 
+        throw error;
     }
 }
 
@@ -132,7 +145,7 @@ async function getBooksbyTag(subject, numResults) {
         // Query database to return <numResults> distinct GoogleBookIDs with the specified tag
         const query = `SELECT DISTINCT b.googleBookId FROM tags_to_books tb JOIN tags t ON tb.tagId = t.tagId JOIN books b ON tb.bookId = b.bookId WHERE t.name = $1 LIMIT $2;`;
 
-        const results = await db.any(query,[subject,numResults]);
+        const results = await db.any(query, [subject, numResults]);
         return results;
     } catch (error) {
         console.error('Problem getting GoogleBookIds by tag:', error);
@@ -140,6 +153,12 @@ async function getBooksbyTag(subject, numResults) {
     }
 }
 
+/**
+     * Searches for matching results using books API, loads data into DB, then returns JSON object
+     * @param {String} query
+     * @param {Number} numResults
+     * @returns {Promise<JSON>}
+     */
 function getBooks(query, numResults) {
     return new Promise((resolve, reject) => {
         axios.get(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=${numResults}`)
@@ -158,12 +177,12 @@ function getBooks(query, numResults) {
                     }
                     const googleId = book.id;
                     var categories = [];
-                    try{
+                    try {
                         categories = book.volumeInfo.categories;
                         categories[0];
                     }
-                    catch{
-                        console.log("No categories for book: "+title);
+                    catch {
+                        console.log("No categories for book: " + title);
                         categories = ["No Genre"];
                     }
 
@@ -245,12 +264,6 @@ function login(username, password) {
 }
 
 module.exports = {
-    /**
-     * Searches for matching results using books API, loads data into DB, then returns JSON object
-     * @param {String} query
-     * @param {Number} numResults
-     * @returns {Promise<JSON>}
-     */
     getBooks: getBooks,
     register: register,
     login: login,
