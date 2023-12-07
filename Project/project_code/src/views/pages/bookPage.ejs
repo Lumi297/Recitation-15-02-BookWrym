@@ -1,63 +1,87 @@
-<%- include ('../partials/header') %>
-    <%- include ('../partials/menu') %>
-        <main>
+<!DOCTYPE html>
+<html lang="en">
 
-            <div class="container">
-                <div class="card-group">
-                    <div class="card">
-                        <!-- going to leave .css stuff untouched for now,this is me attempting to visualize things.  -->
-                        <img class="card-image-top" src="<%- book.volumeInfo.imageLinks.thumbnail %>" alt="book cover">
-                        <div class="card-body">
-                            <div class="row">
-                                <h1 class="card-title"><%- book.volumeInfo.title %></h1>
-                            </div>
-                            <div class="row">
-                                <h2><%- book.volumeInfo.authors.join(', ') %> </h2>
-                        </div>
-                      
+<header>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Books Search</title>
+  <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+        crossorigin="anonymous"
+    />
+  <link rel="stylesheet" href="./css/search.css" type="text/css">
+  <link rel="stylesheet" href="./css/bookpage.css" type="text/css">
+  <link rel="stylesheet" href="./css/nav.css" type="text/css">
+  <script src="./js/script.js"> </script>
+</header>
+<%- include ('../partials/menu') %>
 
+<body>
+    <main>
+        <div class="wrapper">
+            <div class="container main">
+                <div class="box">
+                    <div class="left">
+                        <div class="content"></div>
                     </div>
-                    <!-- going to make a note of this here, 
-                    things to make sure we get from api 
-                        - Book image url (should be stored in there)
-                        - Book title (should also be stored in there)
-                        something up for debate is if we will need to call this into the database or not. 
-                    -->
 
-                </div>
-                <div class = "Card">
-                    <!-- this is where we put everything in the second column down -->
-                    <h2 class = "card-title">Applied tags </h2>
-                    <!-- maybe use for loop to apply things here?  -->
-                    <% for(let i = 0; i < tags.length; i++)  { %>
-                        <p><%- tags[i].name %></p>
-                    <% } %>
+                    <div class="center">
+                        <div class="content"></div>
+                    </div>
 
-                </div>
-                <div class = "card">
-                    <!-- this card section is intended to show books from the same author, debating how we want to order this,  -->
-                    <h1> Also by this author</h1>
-                    <!-- think we would use ejs to write out a for loop showing work from this author,  -->
-                    <div class = "col sm">
-                        <% recommendations.forEach( book => { %>
-                        <div class = "card">
-                            <% if (book.volumeInfo.imageLinks) { %>
-                                <img class = "card-image-top" src = "<%- book.volumeInfo.imageLinks.thumbnail %>" max-width = "100%" height = "auto"> 
-                                <% } else { %>
-                                  <p>No thumbnail available</p>
-                                  <% } %>
-                            <div class = "card-body">
-                                <div class = "row">
-                                    <h1><%- book.volumeInfo.title %></h1>
-                                </div>
-                                <h6> <%- book.volumeInfo.authors.join(' , ') %></h6>
-                            </div>
-                        </div>
-                        <% }); %>
+                    <div class="right">
+                        <div class="content"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-    
-</main>
+        <h4 style="text-align: center; padding: 10px 0 10px 0;">OTHER BOOKS BY AUTHOR</h4>
+        <div class="results" style="width: 1000px !important;">
+            <div class="row" style="width: 1000px !important;">    
+      
+              <div class="col">                 
+                <div class="box-part">             
+                  <img src="https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg" alt="Cover"></i>
+                  
+                  <div class="text-box">
+                    <div class="title">
+                      <h4>VERY LOOOOOOOOOOOOOOOOONG Titleeeeeeeeeeeeeeeeeeeeeee asdfasdfasdfn asdfasdf asdf asdf asdf</h4>
+                    </div>
+                  </div>
+                  <div class="author">
+                    <p>Author</p>
+                  </div>
+                </div>    
+              </div>
+              <div class="col">                 
+                <div class="box-part">             
+                  <img src="https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg" alt="Cover"></i>
+                  
+                  <div class="text-box">
+                    <div class="title">
+                      <h4>Title</h4>
+                    </div>
+                  </div>
+                  <div class="author">
+                    <p>Next Author</p>
+                  </div>
+                </div>    
+              </div>
+              <div class="col">                 
+                <div class="box-part">             
+                  <img src="https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg" alt="Cover"></i>
+                  
+                  <div class="title">
+                    <h4>Title</h4>
+                  </div>
+                </div>    
+              </div> 
+            </div>
+          </div>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+.wrapper{
+    background: white;
+    padding: 0 20px 0 20px;
+}
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+.box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 1000px;
+    height: 450px;
+    border-radius: 10px;
+    background: white;
+    border: solid;
+}
+.left {
+    position: relative;
+    width: 25%;
+    height: 100%;
+    border: solid;
+    .content {
+        justify-content: center;
+    }
+}
+.center {
+    position: relative;
+    width: 50%;
+    height: 100%;
+    border: solid;
+    .content {
+
+    }
+}
+.right {
+    position: relative;
+    width: 25%;
+    height: 100%;
+    border: solid;
+    .content {
+        
+    }
+}

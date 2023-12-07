@@ -1,26 +1,40 @@
-
 <header>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand">BookWrym</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-  
-    <div class="collapse navbar-collapse" id="navbarMenu">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a id="homePageButton" class="nav-link" href="/homepage">Home <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item active">
-          <a id="bookPageButton" class="nav-link" href="/bookpage">Books</a>
-        </li>
-        <li class="nav-item active">
-          <a id="searchButton" class="nav-link" href="/search">Search</a>
-        </li>
-        <li class="nav-item active">
-          <a id="accountButton" class="nav-link" href="/account">Account</a>
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: orangered;">
+    <ul class="navbar-nav">
+      <li class="nav-item" style="padding: 0 25px 0 25px;">
+        <a class="nav-link" href="#" style="color: white;">Home</a>
+      </li>
+    </ul>
+    <div class="formWrapper" id="formWrapper">
+      <button onclick="revealSearch()" id="button" style="color: white;">Search Menu</button>
+      <form action="/search" method="post">
+        <input type="query" id="search" name="search" placeholder="Search by Title, Author or Genre" required>
+
+        <select id="selectCategory" name="selectCategory">
+          <option value="title" selected>Title</option>
+          <option value="author">Author</option>
+          <option value="genre">Genre</option>
+        </select>
+
+        <select id="numResults" name="numResults">
+          <option value="10" selected>10</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+        </select>
+
+        <button type="submit">Find</button>
+      </form>
+    </div>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <!-- <li class="nav-item" style="padding: 0 25px 0 25px;">
+          <a class="nav-link" href="#" style="color: white;">Account</a>
+        </li> -->
+        <li class="nav-item" style="padding: 0 25px 0 25px;">
+          <a class="nav-link" href="#" style="color: white;">Logout</a>
         </li>
       </ul>
     </div>
   </nav>
-   </header>
+ </header>

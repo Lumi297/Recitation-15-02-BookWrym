@@ -96,7 +96,7 @@ app.post('/login', async (req, res) => {
     const user = await database.login(username, password);
     req.session.user = user;
     req.session.save();
-    res.status(200).redirect('/homepage');
+    res.status(200).redirect('/search');
   } catch (error) {
     console.log(error);
     res.status(200).render('pages/login', { error: 'Invalid username or password' });
@@ -105,7 +105,7 @@ app.post('/login', async (req, res) => {
 
 app.get('/search', (req, res) => {
   const books = [];
-  res.render('pages/search', { books });
+  res.render('pages/homepage', { books });
 })
 
 //Needs another page that doesnt render results for search
@@ -179,5 +179,7 @@ app.get("/bookPage/:bookID", async function(req, res) {
     res.status(500).send('Internal Server Error');
   }
 });
+
+
 // for testing purposes, leaving this here 
-module.exports = app.listen(3000);
+app.listen(3000);

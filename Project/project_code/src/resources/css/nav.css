@@ -1,0 +1,37 @@
+.formWrapper {
+    padding-left: 25px;
+    max-height: 25px;
+    overflow: hidden;
+    transition: 0.3s;
+
+    button {
+        background-color: transparent !important;
+        background-repeat: no-repeat !important;
+        border: none;
+        outline: none;
+        /* text-decoration: underline; */
+
+        color: white;
+    }
+    input {
+        /* background-color: transparent !important;
+        background-repeat: no-repeat !important; */
+
+        border: none;
+        border-bottom: thin;
+        outline: none;
+
+        color: black;
+    }
+    select {
+        background-color: transparent !important;
+        background-repeat: no-repeat !important;
+        border: thin;
+        outline: none;
+
+        color: white;
+        option {
+            color: black;
+        }
+    }
+}

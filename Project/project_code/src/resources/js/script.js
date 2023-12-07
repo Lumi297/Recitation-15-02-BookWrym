@@ -15,3 +15,15 @@ function signuppage(){
     element.style.display = "none";
     element2.style.display = "inline";
 }
+
+function revealSearch() {
+    var btnElt = document.getElementById("button");
+    var formWrapElt = document.getElementById("formWrapper");
+    if (btnElt.textContent == "Search Menu") {
+        btnElt.textContent = "Hide Search Menu";
+        formWrapElt.style.maxHeight = '100px';
+    } else {
+        formWrapElt.style.maxHeight = '24px';
+        btnElt.textContent = "Search Menu";
+    }
+}
