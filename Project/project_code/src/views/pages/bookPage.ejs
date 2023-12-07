@@ -1,6 +1,6 @@
 <!-- goal here is to combine with footer and header to get a WIP snapshot, and figure out the specific methedology in question -->
-<%- include ('../partials/head') %> 
-<%- include ('../partials/menu ') %> 
+<%- include ('../partials/header') %> 
+<%- include ('../partials/menu') %> 
 <main>
     
     <div class = "container"> 
@@ -40,17 +40,19 @@
                     <!-- this card section is intended to show books from the same author, debating how we want to order this,  -->
                     <h1> Also by this author</h1>
                     <!-- think we would use ejs to write out a for loop showing work from this author,  -->
-                    <div class = "col sm">
+                    <div class = "col">
+                        <% authorCol.forEach( book => {%>
                         <div class = "card">
-                            <img class = "card-image-top" src = PW2vZFlGVSRJEUSAkAAADAaAMgAAPC+5JW2GZ00V9yOtsMzYE0xkCSZUSEAAcsZFDKPG4eor4VzrDufqj3r8DK+E86w7n6oaNzb8etteyLKK1v/uVtr2LKMqkiRFEgJAgABjBAAAAAeF9yOtsMzRpb/kdfYZmgGMiMqJZgIAOYNEUMo8a/AyvhPOsO5+qLVSOaKsaVWlVVShJwmulAbq349ba9kWUYeGIYvFycbxpyeb/ANOPwTWKYz21+XH4Mq26JGI30xntr8qHwG+mNdtflw+ANyMw++uNdtflQ+AWKY125+VD4A3IGHWKY125+VD4HvnjXbn5UPgDbgYnfPGu3PyofA988a7a/Lh8Aa7EORV9hmZQ6V9iE6Mo3V06mksmtCK1fwiOZUSAQwGAgA5akusekj6Puah+Cn4EG5qH4KfgQqvnWkgTR9F3NQ/BT8CDc1D8FPwIUfO80NNGrqYxhlKtNVKOjSgpaU3QeqSeWTWX9PpCpjOGUq9WErZqFKcoTq/Q+2OjGTfR0aLFGWzQZo1ixXC5RTjRlryyTtmtbTaTzWp6hU8Xwup9OP0XGrUScabt3m3km1wdCazFGWTQZo1lniOH3OH2139GKVd6KjGlpPSyzaWrXlk9f6PPfvBk2tFtpJvK2lqTjpJvV0pN9yFGZTQZo2F9cWtrZ3VxG2VXc8HOcYQS1ZZ9OrgK1e+hRuZ0p2NLQhUjGVZPOMc8+N9up5Zav/S1gZnNEs1+jSRxGlKnGawyonJ146OjBvSpuSy1Z5t6LayzPDf2xlUdGjbUateNNzqRg01BqUU09Wlq0k39uoUcPSXWPSRqcOvLLEJ1o0KVNqm0s9FZTX/aOrWs01n+mX9z0fw0/CgMRpIaaNtuej+Gn4UP6FH8VPwogxOaA230KP4qfhQgPUAAAAAApvDrJqadrSf1HnPOCek/2RWF2EYpKzoJZcGgv38v+2AATWH2eUYu3ptRaaTj0rgZCOFYf2Oj0LiLo4AACW91lo6G5aWimmlorJNCjhljCLUbSilLh+xa9TXo2v5AAPa4tqNzQnQuKcalKaylCSzTXUyDsbWSSlQptRlppOP/AC6wADzWFWCaataSycpLKPA5cZ/z0k5YfZypRpSt6bhGOio6PAs88v8ACAAJ0LS3t5SlQowpym85OMcsywAAAAAAAAB//9k=" max-width = "100%" height = "auto"> 
+                            <img class = "card-image-top">
                             <div class = "card-body">
-                                <div class = "row">
-                                    <h1>test</h1>
-                                </div>
-                                <h6> J.K. Rowling</h6>
+
+
+                            <h2 class = "card-title"></h2>
+
                             </div>
+
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
