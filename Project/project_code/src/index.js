@@ -152,6 +152,7 @@ app.get("/bookPage/:bookID", async function(req, res) {
   try {
     const book = await database.getBook(req.params.bookID);
     const bookAuthor = book.volumeInfo.authors[0];
+    console.log("inauthor:" + bookAuthor);
     const authorRec = await database.getBooks("inauthor:" + bookAuthor, 5);
 
     const category = book.volumeInfo.categories[0];
