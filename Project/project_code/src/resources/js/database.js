@@ -73,9 +73,12 @@ async function addBookToUser(bookId, username) {
  */
 async function getTagsbyBook(bookId) { 
     try{
-
+        const query = `SELECT * FROM tags INNER JOIN tags_to_books ON tags.tagId = tags_to_books.tagId INNER JOIN books ON tags_to_books.bookId = books.bookId WHERE books.bookId = '${bookId}'`; 
+        const results = await db.any(query);
+        return results;
     } catch(error) {
-
+        console.error('problem loading tags for this book', error);
+        throw error; 
     }
 }
 
@@ -125,9 +128,9 @@ async function getBooksbyTag(subject, numResults){
     try{
         const query  = `SELECT * FROM books INNER JOIN tags_to_books ON books.bookId = tags_to_books.bookId INNER JOIN tags on tags_to_books.tagId = tags.tagId where tags.name = '${subject}' LIMIT '${numResults}'`;
     
-    const results = await db.any(query); 
+        const results = await db.any(query); 
 
-    return results;
+        return results;
 
     } catch(error) {
         console.error('problem getting right subject', error);
@@ -245,6 +248,7 @@ module.exports = {
     register: register,
     login: login,
     getBook: getBook,
+    getTagsbyBook: getTagsbyBook,
     getBooksbyTag: getBooksbyTag,
     getUserBookIds: getUserBookIds,
     addBooktoUser: addBookToUser
