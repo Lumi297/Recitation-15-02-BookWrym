@@ -1,0 +1,18 @@
+<%- include ('../partials/header') %> 
+<%- include ('../partials/menu') %> 
+<main>
+
+    <head>
+        <title>User Account</title>
+    </head>
+    <body>
+        <h1>User Account Information</h1>
+        <% if(user) { %>
+            <p>Username: <%= user.username %></p>
+            <!-- <p>Password: <%= user.password %></p> -->
+        <% } %>
+    </body>
+    
+</main>
+
+<%- include ('../partials/footer') %> 
