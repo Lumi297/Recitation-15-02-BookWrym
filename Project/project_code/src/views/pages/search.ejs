@@ -95,7 +95,7 @@
       <div class="row">    
         <% books.forEach(book=> { %>
         <div class="col">                 
-          <div class="box-part">
+          <a href="/bookPage/<%= encodeURIComponent(book.id) %>" class="box-part">
             <% if (book.volumeInfo.imageLinks) { %>             
             <img src="<%= book.volumeInfo.imageLinks.thumbnail %>" alt="Cover">
             <% } else { %>
@@ -113,7 +113,7 @@
             <div class="author">
               <p><%= book.volumeInfo.authors.join(', ') %></p>
             </div>
-          </div>    
+          </a>     
         </div>
         <% }) %>
       </div>
