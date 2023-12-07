@@ -1,49 +1,32 @@
-.results {
-    width: 800px;
+.container{
     margin: auto;
-    background-color: whitesmoke;
+    justify-content: center;
 }
 .row {
-    width: 800px;
+    padding: 0 25px 0 25px;
+    justify-content: center;
 }
 .col {
-    height: 385px;
-    width: 200px;
     flex: 0 0 0;
-    flex-basis: 0;
+    padding-bottom: 10px;
 }
-.box-part{
-    height: 385px;
-    width: 200px;
-    background:#FFF;
-    border-radius:0;
-    padding-top: 10px;
-    text-align: center;
-
-    border-style: solid;
-    border-width: thin;
-    border-color: lightgray;
+.card {
+    height: 400px !important;
+    width: 200px !important;
+    img {
+        height: 275px;
+        width: 100%;
+        object-fit: cover;
+    }
 }
-.box-part:hover{
-    border-style: solid;
-    border-width: medium;
-    border-color: orangered;
-}
-.text-box{
-    margin: auto;
-    width: 180px;
-    max-height: 120px;
+.card-body {
     overflow: hidden;
 }
-.title{
-    padding-top: 5px;
-    overflow-wrap: break-word;
+.card-title {
+    text-decoration: underline;
+    color: black;
 }
-.author{
-    overflow-wrap: break-word;
-}
-img {
-    height: 200px;
-    width: 150px;
-    object-fit: cover;
+.card-text {
+    text-decoration: none;
+    color: grey;
 }

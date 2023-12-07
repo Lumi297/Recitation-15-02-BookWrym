@@ -167,7 +167,14 @@ function getBooks(query, numResults) {
                 //add book info to database
                 for (const book of books) {
                     const title = book.volumeInfo.title;
-                    const author = book.volumeInfo.authors.join(', ');
+                    var author;
+                    try{
+                        author = book.volumeInfo.authors.join(', ');
+                    }
+                    catch{
+                        console.log("No author found for book: "+title);
+                        author="No Author Found";
+                    }
                     var image_url = 'No Image URL';
                     try {
                         image_url = book.volumeInfo.imageLinks.thumbnail;
