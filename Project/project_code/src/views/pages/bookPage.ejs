@@ -1,9 +1,63 @@
-<!-- goal here is to combine with footer and header to get a WIP snapshot, and figure out the specific methedology in question -->
-<%- include ('../partials/head') %> 
-<%- include ('../partials/menu ') %> 
-<main>
+<%- include ('../partials/header') %>
+    <%- include ('../partials/menu') %>
+        <main>
+
+            <div class="container">
+                <div class="card-group">
+                    <div class="card">
+                        <!-- going to leave .css stuff untouched for now,this is me attempting to visualize things.  -->
+                        <img class="card-image-top" src="<%- book.volumeInfo.imageLinks.thumbnail %>" alt="book cover">
+                        <div class="card-body">
+                            <div class="row">
+                                <h1 class="card-title"><%- book.volumeInfo.title %></h1>
+                            </div>
+                            <div class="row">
+                                <h2><%- book.volumeInfo.authors.join(', ') %> </h2>
+                        </div>
+                      
+
+                    </div>
+                    <!-- going to make a note of this here, 
+                    things to make sure we get from api 
+                        - Book image url (should be stored in there)
+                        - Book title (should also be stored in there)
+                        something up for debate is if we will need to call this into the database or not. 
+                    -->
+
+                </div>
+                <div class = "Card">
+                    <!-- this is where we put everything in the second column down -->
+                    <h2 class = "card-title">Applied tags </h2>
+                    <!-- maybe use for loop to apply things here?  -->
+                    <% for(let i = 0; i < tags.length; i++)  { %>
+                        <p><%- tags[i].name %></p>
+                    <% } %>
+
+                </div>
+                <div class = "card">
+                    <!-- this card section is intended to show books from the same author, debating how we want to order this,  -->
+                    <h1> Also by this author</h1>
+                    <!-- think we would use ejs to write out a for loop showing work from this author,  -->
+                    <div class = "col sm">
+                        <% recommendations.forEach( book => { %>
+                        <div class = "card">
+                            <% if (book.volumeInfo.imageLinks) { %>
+                                <img class = "card-image-top" src = "<%- book.volumeInfo.imageLinks.thumbnail %>" max-width = "100%" height = "auto"> 
+                                <% } else { %>
+                                  <p>No thumbnail available</p>
+                                  <% } %>
+                            <div class = "card-body">
+                                <div class = "row">
+                                    <h1><%- book.volumeInfo.title %></h1>
+                                </div>
+                                <h6> <%- book.volumeInfo.authors.join(' , ') %></h6>
+                            </div>
+                        </div>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     
 </main>
-
-<%- include ('../partials/footer') %> 

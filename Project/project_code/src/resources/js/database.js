@@ -67,6 +67,22 @@ async function addBookToUser(bookId, username) {
 }
 
 /**
+ * searches tags_to_books to find all tags relevant to one section or another 
+ * @param {int} googleBookId - using book id for now to send tings back
+ * @return {promise<JSON[]>} similarBooks - returns a JSON array of books   
+ */
+async function getTagsbyBook(googleBookId) { 
+    try{
+        const query = `SELECT * FROM tags INNER JOIN tags_to_books ON tags.tagId = tags_to_books.tagId INNER JOIN books ON tags_to_books.bookId = books.bookId WHERE books.googleBookId = '${googleBookId}'`; 
+        const results = await db.any(query);
+        return results;
+    } catch(error) {
+        console.error('problem loading tags for this book', error);
+        throw error; 
+    }
+}
+
+/**
  * Searches users_to_books and returns list of GoogleBookIds
  * @param {string} username - User's username.
  * @return {Promise<string[]>} - Resolves with an array of GoogleBookIds.
@@ -93,7 +109,7 @@ async function getUserBookIds(username) {
  * uses google books api in order to return json object
  * @param {string} googleBookId 
  */
-async function getBook(googleBookId) {
+function getBook(googleBookId) {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`https://www.googleapis.com/books/v1/volumes/${googleBookId}`);
@@ -105,10 +121,23 @@ async function getBook(googleBookId) {
     });
 }
 
-function getBookCategories(googleBookId) {
-    return new Promise(async (resolve, reject) => {
-        const categories = await db.any('SELECT tagId FROM tags_to_books WHERE username = $1', [username]);
-    });
+/**
+ *  getBooksbyTag queries our data base and searches for 5 google book ID's that correspond with a given tag. 
+ * @param {*} query 
+ * @param {*} numResults 
+ * @returns {promise<string[]>} an array of GoogleBookIDs
+ */
+async function getBooksbyTag(subject, numResults) {
+    try {
+        // Query database to return <numResults> distinct GoogleBookIDs with the specified tag
+        const query = `SELECT DISTINCT b.googleBookId FROM tags_to_books tb JOIN tags t ON tb.tagId = t.tagId JOIN books b ON tb.bookId = b.bookId WHERE t.name = $1 LIMIT $2;`;
+
+        const results = await db.any(query,[subject,numResults]);
+        return results;
+    } catch (error) {
+        console.error('Problem getting GoogleBookIds by tag:', error);
+        throw error;
+    }
 }
 
 function getBooks(query, numResults) {
@@ -116,10 +145,8 @@ function getBooks(query, numResults) {
         axios.get(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=${numResults}`)
             .then(async results => {
                 const books = results.data.items;
-                console.log(books);
                 //add book info to database
                 for (const book of books) {
-                    console.log(book);
                     const title = book.volumeInfo.title;
                     const author = book.volumeInfo.authors.join(', ');
                     var image_url = 'No Image URL';
@@ -130,7 +157,15 @@ function getBooks(query, numResults) {
                         console.log("No Image URL found for book: " + title);
                     }
                     const googleId = book.id;
-                    const categories = book.volumeInfo.categories;
+                    var categories = [];
+                    try{
+                        categories = book.volumeInfo.categories;
+                        categories[0];
+                    }
+                    catch{
+                        console.log("No categories for book: "+title);
+                        categories = ["No Genre"];
+                    }
 
                     try {
                         // Check if the book is already in the database
@@ -220,6 +255,8 @@ module.exports = {
     register: register,
     login: login,
     getBook: getBook,
+    getTagsbyBook: getTagsbyBook,
+    getBooksbyTag: getBooksbyTag,
     getUserBookIds: getUserBookIds,
     addBooktoUser: addBookToUser
 };
