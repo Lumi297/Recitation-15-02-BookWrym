@@ -129,17 +129,10 @@ function getBook(googleBookId) {
  */
 async function getBooksbyTag(subject, numResults) {
     try {
-        // Query the books table for books associated with the given tag
-        const query = `
-            SELECT DISTINCT ON (books.googleBookId) books.googleBookId
-            FROM books
-            INNER JOIN tags_to_books ON books.bookId = tags_to_books.bookId
-            INNER JOIN tags ON tags_to_books.tagId = tags.tagId
-            WHERE tags.name = $1
-            LIMIT $2`;
+        // Query database to return <numResults> distinct GoogleBookIDs with the specified tag
+        const query = `SELECT DISTINCT b.googleBookId FROM tags_to_books tb JOIN tags t ON tb.tagId = t.tagId JOIN books b ON tb.bookId = b.bookId WHERE t.name = $1 LIMIT $2;`;
 
-        const results = await db.map(query, [subject, numResults], (row) => row.googlebookid);
-
+        const results = await db.any(query,[subject,numResults]);
         return results;
     } catch (error) {
         console.error('Problem getting GoogleBookIds by tag:', error);
@@ -164,7 +157,15 @@ function getBooks(query, numResults) {
                         console.log("No Image URL found for book: " + title);
                     }
                     const googleId = book.id;
-                    const categories = book.volumeInfo.categories;
+                    var categories = [];
+                    try{
+                        categories = book.volumeInfo.categories;
+                        categories[0];
+                    }
+                    catch{
+                        console.log("No categories for book: "+title);
+                        categories = ["No Genre"];
+                    }
 
                     try {
                         // Check if the book is already in the database
