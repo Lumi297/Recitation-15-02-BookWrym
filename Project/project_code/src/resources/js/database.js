@@ -110,13 +110,21 @@ async function getUserBookIds(username) {
  * @param {string} googleBookId 
  */
 async function getBook(googleBookId) {
-    try {
-        const response = await axios.get(`https://www.googleapis.com/books/v1/volumes/${googleBookId}`);
-        return response.data;
-    } catch (error) {
-        console.error('Error getting book details:', error);
-        throw error;
-    }
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`https://www.googleapis.com/books/v1/volumes/${googleBookId}`);
+            resolve(response.data);
+        } catch (error) {
+            console.error('Error getting book details:', error);
+            reject(error);
+        }
+    });
+}
+
+function getBookCategories(googleBookId) {
+    return new Promise(async (resolve, reject) => {
+        const categories = await db.any('SELECT tagId FROM tags_to_books WHERE username = $1', [username]);
+    });
 }
 /**
  *  getBooksbyTag queries our data base and searches for 5 books that correspond with a given tag. 
@@ -151,11 +159,11 @@ function getBooks(query, numResults) {
                     const title = book.volumeInfo.title;
                     const author = book.volumeInfo.authors.join(', ');
                     var image_url = 'No Image URL';
-                    try{
+                    try {
                         image_url = book.volumeInfo.imageLinks.thumbnail;
                     }
-                    catch{
-                        console.log("No Image URL found for book: "+title);
+                    catch {
+                        console.log("No Image URL found for book: " + title);
                     }
                     const googleId = book.id;
                     const categories = book.volumeInfo.categories;
