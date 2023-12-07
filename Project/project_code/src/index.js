@@ -35,7 +35,7 @@ app.use(
 );
 
 const auth = (req, res, next) => {
-  if (!req.session.user && req.url != "/login" && req.url != "/register") {
+  if (!req.session.user && req.url != "/login" && req.url != "/register"&&req.url!="/search") {
     return res.redirect("/login");
   }
   next();
