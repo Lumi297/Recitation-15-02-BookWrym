@@ -8,7 +8,7 @@ CREATE TABLE IF  NOT EXISTS users(
 -- tags, books, and the joining tables for all of them 
 
 CREATE  TABLE IF  NOT EXISTS books (
-    bookId SERIAL SERIAL PRIMARY KEY,
+    bookId SERIAL PRIMARY KEY,
     author VARCHAR(100),
     title VARCHAR(100), 
     image_url VARCHAR(255),
