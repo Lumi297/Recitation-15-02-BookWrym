@@ -93,7 +93,7 @@ async function getUserBookIds(username) {
  * uses google books api in order to return json object
  * @param {string} googleBookId 
  */
-async function getBook(googleBookId) {
+function getBook(googleBookId) {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`https://www.googleapis.com/books/v1/volumes/${googleBookId}`);
