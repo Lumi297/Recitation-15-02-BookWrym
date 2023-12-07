@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <%- include ('../partials/header') %>
     <%- include ('../partials/menu') %>
         <main>
@@ -13,6 +14,25 @@
                             </div>
                             <div class="row">
                                 <h2><%- book.volumeInfo.authors.join(', ') %> </h2>
+=======
+<!-- goal here is to combine with footer and header to get a WIP snapshot, and figure out the specific methedology in question -->
+<%- include ('../partials/header') %> 
+<%- include ('../partials/menu') %> 
+<main>
+    
+    <div class = "container"> 
+        <!-- looking at the wireframe, going to have a card with book image and title -->
+            <div class = "card-group">
+                <div class = "card">
+                    <!-- going to leave .css stuff untouched for now,this is me attempting to visualize things.  -->
+                    <img class = "card-image-top" src = "https://upload.wikimedia.org/wikipedia/en/thumb/7/7a/Harry_Potter_and_the_Philosopher%27s_Stone_banner.jpg/330px-Harry_Potter_and_the_Philosopher%27s_Stone_banner.jpg" alt = "book cover">
+                    <div class = "card-body">
+                        <div class = "row">
+                            <h1 class = "card-title">Harry Potter and the Sorcerer's stone</h1>
+                        </div>
+                        <div class = "row">
+                            <h2>J.K. Rowling </h2>
+>>>>>>> ca738049283588515a04fc26b52cdb9281441154
                         </div>
                       
 
@@ -38,6 +58,7 @@
                     <!-- this card section is intended to show books from the same author, debating how we want to order this,  -->
                     <h1> Also by this author</h1>
                     <!-- think we would use ejs to write out a for loop showing work from this author,  -->
+<<<<<<< HEAD
                     <div class = "col sm">
                         <% recommendations.forEach( book => { %>
                         <div class = "card">
@@ -51,9 +72,25 @@
                                     <h1><%- book.volumeInfo.title %></h1>
                                 </div>
                                 <h6> <%- book.volumeInfo.authors.join(' , ') %></h6>
+=======
+                    <div class = "col">
+                        <% authorCol.forEach( book => {%>
+                        <div class = "card">
+                            <img class = "card-image-top">
+                            <div class = "card-body">
+
+
+                            <h2 class = "card-title"></h2>
+
+>>>>>>> ca738049283588515a04fc26b52cdb9281441154
                             </div>
+
                         </div>
+<<<<<<< HEAD
                         <% }); %>
+=======
+
+>>>>>>> ca738049283588515a04fc26b52cdb9281441154
                     </div>
                 </div>
             </div>
