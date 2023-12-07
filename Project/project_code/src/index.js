@@ -34,9 +34,18 @@ app.use(
   })
 );
 
+const auth = (req, res, next) => {
+  if (!req.session.user && req.url != "/login" && req.url != "/register") {
+    return res.redirect("/login");
+  }
+  next();
+};
+
+app.use(auth);
+
 // dummy route for testing and lab 11 purposes
 app.get('/welcome', (req, res) => {
-  res.json({ status: 'success', message: 'Welcome!' });
+  res.json({ status: 'success', message: 'Welcome!' }).status(200);
 });
 
 // 
@@ -66,7 +75,7 @@ app.post('/register', async (req, res) => {
   } catch (error) {
     if (error.message.includes('duplicate key value')) {
       // Duplicate username error handling
-      res.status(400).render('pages/register', { error: 'Username already exists. Choose a different one.' });
+      res.status(200).render('pages/register', { error: 'Username already exists. Choose a different one.' });
     } else {
       // General error handling
       console.error(error);
@@ -85,10 +94,12 @@ app.post('/login', async (req, res) => {
     const password = req.body.password;
 
     const user = await database.login(username, password);
-    res.status(200).redirect('/search');
+    req.session.user = user;
+    req.session.save();
+    res.status(200).redirect('/homepage');
   } catch (error) {
     console.log(error);
-    res.status(401).render('pages/login', { error: 'Invalid username or password' });
+    res.status(200).render('pages/login', { error: 'Invalid username or password' });
   }
 });
 
@@ -127,51 +138,21 @@ app.post('/search', async (req, res) => {
 });
 
 // up next is the creation of a home page for the user: this should include user info, and a collection of books that they have 
-//app.get("/homepage", (req,res) => {
-    
-  // req.session. user should show user name 
-  // const userfavorites = `SELECT * FROM books INNER JOIN users_to_books ON books.bookId = users_to_books.bookId INNER JOIN users ON  users_to_books.username = users.username WHERE users.username = 'userman' `
-  // db.any(userfavorites)
-  // .then((data) => {
-  //   res
-  //   .status(200)
-  //   .render('pages/homepage');
-  // })
-  // .catch((err) => {
-  //   console.log(err);
-  //   res
-  //   .status(400)
-
-  // });
-
-//});
-app.get("/homepage", (req, res) => {
-  // Assume 'userman' is the logged-in user's username
-  const username = 'benz'; // In a real scenario, you should get this from req.session or similar
-
-  const userFavoritesQuery = `
-    SELECT * FROM books 
-    INNER JOIN users_to_books ON books.bookId = users_to_books.bookId 
-    INNER JOIN users ON users_to_books.username = users.username 
-    WHERE users.username = $1`;
-
-  db.any(userFavoritesQuery, [username])
-    .then((data) => {
-      res
-        .status(200)
-        .render('pages/homepage', { user: username, books: data });
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(400).send('Error fetching data');
-    });
+app.get("/homepage", async (req, res) => {
+  const userBookIds = await database.getUserBookIds(req.session.user.username);
+  const books = await Promise.all(userBookIds.map(async (id) => {
+    const book = await database.getBook(id);
+    return book;
+  }));
+  res.render('pages/homePage', { books: books, user: req.session.user });
 });
-
-
 
 // also going to note, there will be a post route for adding to favorites, this will 
-app.get("/bookPage", function(req,res) {
-  
+app.get("/bookPage", async function (req, res) {
+  console.log(req.session.user);
+  const book = await database.getbook();
+  console.log(userBooks);
+  res.render('pages/bookPage', { book: book, user: req.session.user });
 });
 // for testing purposes, leaving this here 
-app.listen(3000);
+module.exports = app.listen(3000);

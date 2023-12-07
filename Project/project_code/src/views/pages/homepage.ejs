@@ -1,19 +1,39 @@
-<%- include ('../partials/header') %>
-<%- include ('../partials/menu') %>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>User's Homepage</title>
-</head>
-<body>
-    <h1>Welcome, <%= user %>!</h1>
-    <h2>Your Favorite Books:</h2>
-    <ul>
-        <% books.forEach(function(book) { %>
-            <li><%= book.title %> - <%= book.author %></li>
-        <% }); %>
-    </ul>
-</body>
-</html>
+<%- include ('../partials/header') %> 
+<%- include ('../partials/menu') %> 
+<main>
 
-<%- include ('../partials/footer') %>
+    
+    <div class = "container">
+        <div class = "row">
+            
+            <h1> Welcome <%- user.username %>! </h1>
+        </div>
+        <div class = "row">
+            
+            
+            <table class = "table">
+                <tr>
+                
+                <% books.forEach( book => { %>  
+                    <td>
+                        <div class = "card">
+                            <img class = "card-image-top" src = "<%- book.volumeInfo.imageLinks.thumbnail %>" max-width = "100%" height = "auto"> 
+                            <div class = "card-body">
+                                <div class = "row">
+                                    <h1><%- book.volumeInfo.title %></h1>
+                                </div>
+                                <h6><%- book.volumeInfo.authors.join(', ') %></h6>
+                            </div>
+                        </div>
+                    </td>
+                <% }); %>
+                
+                </tr>
+            </table>
+        </div>
+
+    </div>
+    
+</main>
+
+<%- include ('../partials/footer') %> 
