@@ -150,7 +150,10 @@ app.get("/homepage", async (req, res) => {
 // also going to note, there will be a post route for adding to favorites, this will 
 app.get("/bookPage/:bookID", async function(req, res) {
     try {
+
       const book = await database.getBook(req.params.bookID);
+
+      await database.addCategoryToBook(await database.getGoogleBookId(book.id),"sus");
 
       if(book.volumeInfo.authors){
         const bookAuthor = book.volumeInfo.authors[0];
@@ -183,6 +186,20 @@ app.post('/addBookToUser/:bookID', async (req, res) => {
     res.sendStatus(200);
   } catch (error) {
     console.error('Error adding book to user:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/addTagToBook/:bookID', async (req, res) => {
+  const { bookID } = req.params;
+  const { tag } = req.body.tag;
+
+  // Call the appropriate function to add the book to the user
+  try {
+    await database.addCategoryToBook(database.getGoogleBookId(bookID),tag);
+    res.redirect('/bookpage/'+bookID);
+  } catch (error) {
+    console.error('Error adding tag to book:', error);
     res.status(500).send('Internal Server Error');
   }
 });

@@ -29,8 +29,11 @@ async function addCategoryToBook(bookId, category) {
     try {
         if (category) {
 
+            console.log(category);
+
             // Check if the category already exists in the tags table
             const existingTag = await db.oneOrNone('SELECT * FROM tags WHERE name = $1', [category]);
+            console.log(existingTag);
 
             let tagId;
             if (!existingTag) {
@@ -41,8 +44,13 @@ async function addCategoryToBook(bookId, category) {
                 tagId = existingTag.tagid;
             }
 
-            // Connect the book with the category in the tags_to_books table
+            const existingRecord = await db.any('SELECT * FROM tags_to_books WHERE tagId = $1 AND bookId = $2', [tagId, bookId]);
+            if(existingRecord) return;
+
+            console.log(tagId);
+
             await db.none('INSERT INTO tags_to_books (tagId, bookId) VALUES ($1, $2)', [tagId, bookId]);
+            
 
         }
     } catch (error) {
@@ -80,14 +88,43 @@ async function addBookToUser(googleBookId, username) {
 }
 
 /**
+ * removes item from users_to_books table.
+ * @param {string} googleBookId - The Google Book ID.
+ * @param {string} username - The username.
+ * @returns {Promise<void>} 
+ */
+async function removeBookFromUser(googleBookId, username) {
+    try {
+        // Find the corresponding bookId for the given googleBookId
+        const book = await db.oneOrNone('SELECT bookId FROM books WHERE googleBookId = $1', [googleBookId]);
+
+        if (book) {
+            // Check if the entry already exists in users_to_books
+            const existingEntry = await db.oneOrNone('SELECT * FROM users_to_books WHERE username = $1 AND bookId = $2', [username, book.bookid]);
+
+            if (existingEntry) {
+                // Remove the book from the users_to_books table
+                await db.none('DELETE FROM users_to_books WHERE username = $1 AND bookId = $2', [username, book.bookid]);
+            }
+        } else {
+            console.error('Book with Google Book ID not found:', googleBookId);
+        }
+    } catch (error) {
+        console.error('Error adding book to user:', error);
+        throw error;
+    }
+}
+
+/**
  * searches tags_to_books to find all tags relevant to one section or another 
  * @param {int} googleBookId - using book id for now to send tings back
  * @return {promise<JSON[]>} similarBooks - returns a JSON array of books   
  */
 async function getTagsbyBook(googleBookId) {
     try {
-        const query = `SELECT * FROM tags INNER JOIN tags_to_books ON tags.tagId = tags_to_books.tagId INNER JOIN books ON tags_to_books.bookId = books.bookId WHERE books.googleBookId = '${googleBookId}'`;
+        const query = `SELECT DISTINCT tags.name FROM tags INNER JOIN tags_to_books ON tags.tagId = tags_to_books.tagId INNER JOIN books ON tags_to_books.bookId = books.bookId WHERE books.googleBookId = '${googleBookId}'`;
         const results = await db.any(query);
+        console.log(results);
         return results;
     } catch (error) {
         console.error('problem loading tags for this book', error);
@@ -150,6 +187,16 @@ async function getBooksbyTag(subject, numResults) {
     } catch (error) {
         console.error('Problem getting GoogleBookIds by tag:', error);
         throw error;
+    }
+}
+
+async function getGoogleBookId(googleBookId){
+    try{
+        const bookId = await db.oneOrNone('SELECT books.bookid FROM books WHERE googlebookid = $1', [googleBookId]);
+        return bookId.bookid;
+    }
+    catch(error){
+        console.log(error.message);
     }
 }
 
@@ -278,5 +325,7 @@ module.exports = {
     getTagsbyBook: getTagsbyBook,
     getBooksbyTag: getBooksbyTag,
     getUserBookIds: getUserBookIds,
-    addBooktoUser: addBookToUser
+    addBooktoUser: addBookToUser,
+    addCategoryToBook: addCategoryToBook,
+    getGoogleBookId: getGoogleBookId
 };
