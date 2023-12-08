@@ -19,6 +19,9 @@
         object-fit: cover;
     }
 }
+.card:hover {
+    border: solid orangered;
+}
 .card-body {
     overflow: hidden;
 }

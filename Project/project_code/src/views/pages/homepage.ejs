@@ -1,39 +1,60 @@
-<%- include ('../partials/header') %> 
-<%- include ('../partials/menu') %> 
-<main>
+<!DOCTYPE html>
+<html lang="en">
 
-    
-    <div class = "container">
-        <div class = "row">
-            
-            <h1> Welcome <%- user.username %>! </h1>
-        </div>
-        <div class = "row">
-            
-            
-            <table class = "table">
-                <tr>
-                
-                <% books.forEach( book => { %>  
-                    <td>
-                        <div class = "card">
-                            <img class = "card-image-top" src = "<%- book.volumeInfo.imageLinks.thumbnail %>" max-width = "100%" height = "auto"> 
-                            <div class = "card-body">
-                                <div class = "row">
-                                    <h1><%- book.volumeInfo.title %></h1>
-                                </div>
-                                <h6><%- book.volumeInfo.authors.join(', ') %></h6>
-                            </div>
-                        </div>
-                    </td>
-                <% }); %>
-                
-                </tr>
-            </table>
-        </div>
+<header>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Books Search</title>
+  <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+        crossorigin="anonymous"
+    />
+  <link rel="stylesheet" href="./css/search.css" type="text/css">
+  <link rel="stylesheet" href="./css/nav.css" type="text/css">
+  <script src="./js/script.js"> </script>
+</header>
+<%- include ('../partials/menu') %>
 
-    </div>
-    
-</main>
+<body>
+    <main>
+        <h1 style="text-align: center; padding: 25px 0 25px 0;">Welcome <%- user.username %>!</h1>
+        <% if (books.length > 0) { %>
+        <div class="container">
+            <h4>Here Are Your Saved Books</h4>
+            <div class="row">
+            <% books.forEach(book => { %>
+            <div class="col">
+                <a href="/bookPage/<%= encodeURIComponent(book.id) %>" style="text-decoration: none;">
+                <div class="card">
+                    <% if (book.volumeInfo.imageLinks) { %>
+                    <img src="<%= book.volumeInfo.imageLinks.thumbnail %>" class="card-img-top" alt="Cover">
+                    <% } else { %>
+                    <img src="https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg" alt="Cover">
+                    <% } %>
+                    <div class="card-body">
+                    <% if(book.volumeInfo.title) { %>
+                    <h5 class="card-title"><%= book.volumeInfo.title %></h5>
+                    <% } else {%>
+                    <h5 class="card-title">No Title</h5>
+                    <% } %>
+        
+                    <% if(book.volumeInfo.authors) { %>
+                    <p class="card-text"><%= book.volumeInfo.authors.join(', ') %></p>
+                    <% } else { %>
+                    <p class="card-text">no author</p>
+                    <% } %>
+                    </div>
+                </div>
+                </a>
+            </div>
+            <% }) %>
+            </div>
+        </div>
+        <% } else { %>
+        <p style="text-align: center;">Nothing added yet..</p>
+        <% } %>
+    </main>
 
 <%- include ('../partials/footer') %> 

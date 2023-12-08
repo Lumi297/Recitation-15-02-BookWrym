@@ -239,6 +239,9 @@
       body: JSON.stringify({ username }),
     });
 
+    // update page
+    location.reload();
+
     if (!response.ok) {
       throw new Error('Error adding book to user\'s library!');
     }
