@@ -160,12 +160,12 @@ app.get("/bookPage/:bookID", async function(req, res) {
 
         const tags = await database.getTagsbyBook(book.id);
 
-        res.render('pages/bookPage', { book: book, recommendations: authorRec, tags:tags});
+        res.render('pages/bookPage', { book: book, recommendations: authorRec, tags:tags, user:req.session.user});
       }
       else {
         const authorRec = null;
         const tags = await database.getTagsbyBook(book.id);
-        res.render('pages/bookPage', { book: book, recommendations: authorRec, tags:tags});
+        res.render('pages/bookPage', { book: book, recommendations: authorRec, tags:tags, user:req.session.user});
       }
     } catch(error) {
       console.error('Error in /bookPage route:', error);
@@ -173,15 +173,19 @@ app.get("/bookPage/:bookID", async function(req, res) {
     }
 });
 
-document.getElementById('addbtn').addEventListener('click',  async function(){
-  try{
-    const bookID = window.location.pathname.split('/').pop();
-    await database.addBooktoUser(bookID,req.session.user.username);
-  }
-  catch(error){
-    console.log("Error adding book to user's library!");
+app.post('/addBookToUser/:bookID', async (req, res) => {
+  const { bookID } = req.params;
+  const { username } = req.body;
+
+  // Call the appropriate function to add the book to the user
+  try {
+    await database.addBooktoUser(bookID, username);
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error adding book to user:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
 
 // for testing purposes, leaving this here 
-app.listen(3000);
+module.exports = app.listen(3000);
