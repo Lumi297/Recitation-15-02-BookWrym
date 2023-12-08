@@ -147,6 +147,7 @@ app.get("/homepage", async (req, res) => {
   res.render('pages/homePage', { books: books, user: req.session.user });
 });
 
+
 // also going to note, there will be a post route for adding to favorites, this will 
 app.get("/bookPage/:bookID", async function(req, res) {
     try {
@@ -185,6 +186,19 @@ app.post('/addBookToUser/:bookID', async (req, res) => {
     console.error('Error adding book to user:', error);
     res.status(500).send('Internal Server Error');
   }
+});
+
+app.get('/account', (req, res) => {
+  res.render('pages/account', { user: req.session.user });
+});
+
+app.get('/about', (req, res) => {
+  res.render('pages/about');
+});
+
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.render("pages/login");
 });
 
 // for testing purposes, leaving this here 
