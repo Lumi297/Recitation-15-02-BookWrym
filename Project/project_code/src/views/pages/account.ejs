@@ -9,7 +9,23 @@
         <h1>User Account Information</h1>
         <% if(user) { %>
             <p>Username: <%= user.username %></p>
-            <!-- <p>Password: <%= user.password %></p> -->
+            <form class="input" action="/account" method="POST" id="change-pass">
+                <h2 class="text-center pt-3">Change Password</h2>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa fa-user"></i></span>
+                    <input type="password" class="form-control" placeholder="Current Password" id="currpass" name="currpass"/>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa fa-user"></i></span>
+                    <input type="password" class="form-control" placeholder="New Password" id="newpass" name="newpass"/>
+                </div>
+
+                <div class="d-grid submit">
+                    <button type="submit">Update</button>
+                </div>
+            </form>
         <% } %>
     </body>
     
