@@ -188,6 +188,20 @@ app.post('/addBookToUser/:bookID', async (req, res) => {
   }
 });
 
+app.post('/removeBookFromUser/:bookID', async (req, res) => {
+  const { bookID } = req.params;
+  const { username } = req.body;
+
+  // Call the appropriate function to add the book to the user
+  try {
+    await database.removeBookFromUser(bookID, username);
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error adding book to user:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 app.get('/account', (req, res) => {
   res.render('pages/account', { user: req.session.user });
 });

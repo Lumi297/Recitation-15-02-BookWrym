@@ -80,6 +80,34 @@ async function addBookToUser(googleBookId, username) {
 }
 
 /**
+ * Removes item from users_to_books table.
+ * @param {string} googleBookId - The Google Book ID.
+ * @param {string} username - The username.
+ * @returns {Promise<void>}
+ */
+async function removeBookFromUser(googleBookId, username) {
+    try {
+        // Find the corresponding bookId for the given googleBookId
+        const book = await db.oneOrNone('SELECT bookId FROM books WHERE googleBookId = $1', [googleBookId]);
+
+        if (book) {
+            // Check if the entry exists in users_to_books
+            const existingEntry = await db.oneOrNone('SELECT * FROM users_to_books WHERE username = $1 AND bookId = $2', [username, book.bookid]);
+
+            if (existingEntry) {
+                // Remove the book from the users_to_books table
+                await db.none('DELETE FROM users_to_books WHERE username = $1 AND bookId = $2', [username, book.bookid]);
+            }
+        } else {
+            console.error('Book with Google Book ID not found:', googleBookId);
+        }
+    } catch (error) {
+        console.error('Error removing book from user:', error);
+        throw error;
+    }
+}
+
+/**
  * searches tags_to_books to find all tags relevant to one section or another 
  * @param {int} googleBookId - using book id for now to send tings back
  * @return {promise<JSON[]>} similarBooks - returns a JSON array of books   
@@ -278,5 +306,6 @@ module.exports = {
     getTagsbyBook: getTagsbyBook,
     getBooksbyTag: getBooksbyTag,
     getUserBookIds: getUserBookIds,
-    addBooktoUser: addBookToUser
+    addBooktoUser: addBookToUser,
+    removeBookFromUser: removeBookFromUser
 };
