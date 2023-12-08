@@ -249,5 +249,29 @@
     console.log(error.message); 
   } 
   });
+
+  document.getElementById('removebtn').addEventListener('click', async function () {
+  try {
+    const bookID = '<%= book.id %>'; 
+    const username = '<%= user.username %>';
+    
+    const response = await fetch(`/removeBookFromUser/${bookID}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username }),
+    });
+
+    // update page
+    location.reload();
+
+    if (!response.ok) {
+      throw new Error('Error removing book from user\'s library!');
+    }
+  } catch (error) {
+    console.log(error.message); 
+  } 
+  });
 </script>
 </html>

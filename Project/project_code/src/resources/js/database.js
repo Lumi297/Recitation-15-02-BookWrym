@@ -194,7 +194,9 @@ function getBooks(query, numResults) {
                 const books = results.data.items;
                 //add book info to database
                 for (const book of books) {
-                    const title = book.volumeInfo.title;
+                    var title = book.volumeInfo.title;
+
+                    title = title.length > 99 ? title.substring(0, 99) : title;
                     var author;
                     try{
                         author = book.volumeInfo.authors.join(', ');
