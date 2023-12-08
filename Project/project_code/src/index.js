@@ -163,8 +163,9 @@ app.get("/bookPage/:bookID", async function(req, res) {
         res.render('pages/bookPage', { book: book, recommendations: authorRec, tags:tags});
       }
       else {
+        const authorRec = null;
         const tags = await database.getTagsbyBook(book.id);
-        res.render('pages/bookPage', { book: book, tags:tags});
+        res.render('pages/bookPage', { book: book, recommendations: authorRec, tags:tags});
       }
     } catch(error) {
       console.error('Error in /bookPage route:', error);
@@ -172,6 +173,15 @@ app.get("/bookPage/:bookID", async function(req, res) {
     }
 });
 
+document.getElementById('addbtn').addEventListener('click',  async function(){
+  try{
+    const bookID = window.location.pathname.split('/').pop();
+    await database.addBooktoUser(bookID,req.session.user.username);
+  }
+  catch(error){
+    console.log("Error adding book to user's library!");
+  }
+});
 
 // for testing purposes, leaving this here 
 app.listen(3000);

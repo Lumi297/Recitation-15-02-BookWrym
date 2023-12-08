@@ -1,87 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" type="text/css">
+  <style>
+    /* Actual Page */
+    .container {
+      padding-top: 50px;
+      display: flex;
+      width: 1200px;
+    }
+    .col-image {
+      flex: 1;
+      position: relative;
 
-<header>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Books Search</title>
-  <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
-        crossorigin="anonymous"
-    />
-  <link rel="stylesheet" href="./css/search.css" type="text/css">
-  <link rel="stylesheet" href="./css/bookpage.css" type="text/css">
-  <link rel="stylesheet" href="./css/nav.css" type="text/css">
-  <script src="./js/script.js"> </script>
-</header>
+      img {
+        height: 500px;
+        width: 300px;
+        object-fit: cover;
+
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+    .col-description {
+      flex: 1;
+      position: relative;
+
+      button {
+        margin-top: 20px;
+      }
+    }
+    .description {
+      height: 195px;
+      overflow-y: scroll;
+      margin-top: -15px;
+    }
+
+    /* navbar */
+    .formWrapper {
+    padding-left: 25px;
+    max-height: 25px;
+    overflow: hidden;
+    transition: 0.3s;
+
+    button {
+        background-color: transparent !important;
+        background-repeat: no-repeat !important;
+        border: none;
+        outline: none;
+        /* text-decoration: underline; */
+
+        color: white;
+    }
+    input {
+        /* background-color: transparent !important;
+        background-repeat: no-repeat !important; */
+
+        border: none;
+        border-bottom: thin;
+        outline: none;
+
+        color: black;
+    }
+    select {
+        background-color: transparent !important;
+        background-repeat: no-repeat !important;
+        border: thin;
+        outline: none;
+
+        color: white;
+        option {
+            color: black;
+        }
+    }
+  }
+
+  /* Cards CSS */
+.container{
+  margin: auto;
+  justify-content: center;
+}
+.row {
+    padding: 0 25px 0 25px;
+    justify-content: center;
+}
+.col {
+    flex: 0 0 0;
+    padding-bottom: 10px;
+}
+.card {
+    height: 400px !important;
+    width: 200px !important;
+    img {
+        height: 275px;
+        width: 100%;
+        object-fit: cover;
+    }
+}
+.card-body {
+    overflow: hidden;
+}
+.card-title {
+    text-decoration: underline;
+    color: black;
+}
+.card-text {
+    text-decoration: none;
+    color: grey;
+}
+  </style>
+</head>
 <%- include ('../partials/menu') %>
 
 <body>
-    <main>
-        <div class="wrapper">
-            <div class="container main">
-                <div class="box">
-                    <div class="left">
-                        <div class="content"></div>
-                    </div>
+  <!-- <h1><%= book.volumeInfo.title %></h1>
+  <% if(recommendations) {%>
+  <% recommendations.forEach(rec => { %>
+    <a href="/bookPage/<%= encodeURIComponent(rec.id) %>"><%= rec.volumeInfo.title %></a>
+  <% })%>
+  <% } %> -->
 
-                    <div class="center">
-                        <div class="content"></div>
-                    </div>
+  <div class="container">
+    <div class="col-image">
+      <% if (book.volumeInfo.imageLinks) { %>
+      <img src="<%= book.volumeInfo.imageLinks.thumbnail %>" alt="Cover">
+      <% } else { %>
+      <img src="https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg" alt="Cover">
+      <% } %>
+    </div>
 
-                    <div class="right">
-                        <div class="content"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="col-description">
+      <% if (book.volumeInfo.title) { %>
+      <h1><%= book.volumeInfo.title %></h1>
+      <% } else { %>
+      <h1>No Title</h1>
+      <% } %>
 
-        <h4 style="text-align: center; padding: 10px 0 10px 0;">OTHER BOOKS BY AUTHOR</h4>
-        <div class="results" style="width: 1000px !important;">
-            <div class="row" style="width: 1000px !important;">    
+      <% if (book.volumeInfo.authors) { %>
+      <h4><%= book.volumeInfo.authors.join(', ') %></h4>
+      <% } else { %>
+      <h4>no author</h4>
+      <% } %>
+
+      <% if (book.volumeInfo.categories) { %>
+      <p>Genre(s) <%= book.volumeInfo.categories %></p>
+      <% } else { %>
+      <p>Genre(s) none</p>
+      <% } %>
       
-              <div class="col">                 
-                <div class="box-part">             
-                  <img src="https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg" alt="Cover"></i>
-                  
-                  <div class="text-box">
-                    <div class="title">
-                      <h4>VERY LOOOOOOOOOOOOOOOOONG Titleeeeeeeeeeeeeeeeeeeeeee asdfasdfasdfn asdfasdf asdf asdf asdf</h4>
-                    </div>
-                  </div>
-                  <div class="author">
-                    <p>Author</p>
-                  </div>
-                </div>    
+      <p>description:</p>
+      <% if (book.volumeInfo.description) { %>
+      <div class="description"> <%- book.volumeInfo.description %></div>
+      <% } else { %>
+        <div class="description">none</div>
+      <% } %>
+
+      <button name="addbtn" id="addbtn">Add Book!</button>
+    </div>
+  </div>
+
+  <% if(recommendations) { %>
+  <div class="Recommendations">
+    <h2 style="text-align: center; padding: 10px 0 10px 0;"> Other books by <%= book.volumeInfo.authors %></h2>
+    <div class="container">
+      <div class="row">
+        <% recommendations.forEach(rec => { %>
+        <div class="col">
+          <a href="/bookPage/<%= encodeURIComponent(book.id) %>" style="text-decoration: none;">
+            <div class="card">
+              <% if (rec.volumeInfo.imageLinks) { %>
+              <img src="<%= rec.volumeInfo.imageLinks.thumbnail %>" class="card-img-top" alt="Cover">
+              <% } else { %>
+              <img src="https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg" alt="Cover">
+              <% } %>
+              <div class="card-body">
+                <% if (rec.volumeInfo.title) { %>
+                <h5 class="card-title"><%= rec.volumeInfo.title %></h5>
+                <% } else { %>
+                  <h5 class="card-title">No Title</h5>
+                <% } %>
+
+                <% if (rec.volumeInfo.authors) { %>
+                <p class="card-text"><%= rec.volumeInfo.authors.join(', ') %></p>
+                <% } else { %>
+                <p class="card-text">no author</p>
+                <% } %>
               </div>
-              <div class="col">                 
-                <div class="box-part">             
-                  <img src="https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg" alt="Cover"></i>
-                  
-                  <div class="text-box">
-                    <div class="title">
-                      <h4>Title</h4>
-                    </div>
-                  </div>
-                  <div class="author">
-                    <p>Next Author</p>
-                  </div>
-                </div>    
-              </div>
-              <div class="col">                 
-                <div class="box-part">             
-                  <img src="https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg" alt="Cover"></i>
-                  
-                  <div class="title">
-                    <h4>Title</h4>
-                  </div>
-                </div>    
-              </div> 
             </div>
-          </div>
-    </main>
+          </a>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+  <% } %>
 </body>
 
+<script>
+  // navbar scripts
+  function revealSearch() {
+    var btnElt = document.getElementById("button");
+    var formWrapElt = document.getElementById("formWrapper");
+    if (btnElt.textContent == "Search Menu") {
+        btnElt.textContent = "Hide Search Menu";
+        formWrapElt.style.maxHeight = '100px';
+    } else {
+        formWrapElt.style.maxHeight = '24px';
+        btnElt.textContent = "Search Menu";
+    }
+}
+</script>
 </html>
