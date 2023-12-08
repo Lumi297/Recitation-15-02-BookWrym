@@ -149,20 +149,27 @@ app.get("/homepage", async (req, res) => {
 
 // also going to note, there will be a post route for adding to favorites, this will 
 app.get("/bookPage/:bookID", async function(req, res) {
-  try {
-    const book = await database.getBook(req.params.bookID);
-    const bookAuthor = book.volumeInfo.authors[0];
-    console.log("inauthor:" + bookAuthor);
-    
-    const authorRec = await database.getBooks("inauthor:" + bookAuthor, 5);
+    try {
+      const book = await database.getBook(req.params.bookID);
 
-    const tags = await database.getTagsbyBook(book.id);
+      if(book.volumeInfo.authors){
+        const bookAuthor = book.volumeInfo.authors[0];
+        console.log("inauthor:" + bookAuthor);
+        
+        const authorRec = await database.getBooks("inauthor:" + bookAuthor, 5);
 
-    res.render('pages/bookPage', { book: book, recommendations: authorRec, tags:tags});
-  } catch (error) {
-    console.error('Error in /bookPage route:', error);
-    res.status(500).send('Internal Server Error');
-  }
+        const tags = await database.getTagsbyBook(book.id);
+
+        res.render('pages/bookPage', { book: book, recommendations: authorRec, tags:tags});
+      }
+      else {
+        const tags = await database.getTagsbyBook(book.id);
+        res.render('pages/bookPage', { book: book, tags:tags});
+      }
+    } catch(error) {
+      console.error('Error in /bookPage route:', error);
+      res.status(500).send('Internal Server Error');
+    }
 });
 
 
