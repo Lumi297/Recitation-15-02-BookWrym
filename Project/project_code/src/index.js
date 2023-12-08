@@ -156,25 +156,10 @@ app.get("/bookPage/:bookID", async function(req, res) {
     console.log("inauthor:" + bookAuthor);
     const authorRec = await database.getBooks("inauthor:" + bookAuthor, 5);
 
-    const category = book.volumeInfo.categories[0];
-
-    // Get array of GoogleBook IDs and map to array of books using database.getBook
-    const googleBookIds = await database.getBooksbyTag(category,5);
-
-    // Map each GoogleBookID to its corresponding book details
-    const tagRec = await Promise.all(googleBookIds.map(async (googleBookId) => {
-      return await database.getBook(googleBookId);
-    }));
-
-    const recommendations = [...authorRec,...tagRec];
-
-    /*recommendations.forEach(rec =>{
-      console.log("Title: "+rec.volumeInfo.title+" by "+rec.volumeInfo.authors[0]+" with tag: "+rec.volumeInfo.categories);
-    });*/
 
     const tags = await database.getTagsbyBook(book.id);
 
-    res.render('pages/bookPage', { book: book, recommendations: recommendations, tags:tags});
+    res.render('pages/bookPage', { book: book, recommendations: authorRec, tags:tags});
   } catch (error) {
     console.error('Error in /bookPage route:', error);
     res.status(500).send('Internal Server Error');
