@@ -33,6 +33,16 @@
 
       button {
         margin-top: 20px;
+        background-color: orangered !important;
+        border-color: orangered !important;
+        border: solid orangered !important;
+        color: white;
+      }
+      button:hover{
+        background-color: transparent !important;
+        border-color: orangered !important;
+        border: solid orangered !important;
+        color: orangered;
       }
     }
     .description {
@@ -160,18 +170,19 @@
         <div class="description">none</div>
       <% } %>
 
-      <button name="addbtn" id="addbtn">Add Book!</button>
+      <button name="addbtn" id="addbtn" class="rounded">Add Book!</button>
     </div>
   </div>
 
+  <!-- for books by the same author(s) -->
   <% if(recommendations) { %>
-  <div class="Recommendations">
-    <h2 style="text-align: center; padding: 10px 0 10px 0;"> Other books by <%= book.volumeInfo.authors %></h2>
+  <div class="Recommendations" style="margin-top: 150px;">
+    <h2 style="text-align: center; padding: 10px 0 10px 0;"> Other books by <%= book.volumeInfo.authors.join(', ') %></h2>
     <div class="container">
       <div class="row">
         <% recommendations.forEach(rec => { %>
         <div class="col">
-          <a href="/bookPage/<%= encodeURIComponent(book.id) %>" style="text-decoration: none;">
+          <a href="/bookPage/<%= encodeURIComponent(rec.id) %>" style="text-decoration: none;">
             <div class="card">
               <% if (rec.volumeInfo.imageLinks) { %>
               <img src="<%= rec.volumeInfo.imageLinks.thumbnail %>" class="card-img-top" alt="Cover">

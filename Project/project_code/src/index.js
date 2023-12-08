@@ -184,4 +184,4 @@ document.getElementById('addbtn').addEventListener('click',  async function(){
 });
 
 // for testing purposes, leaving this here 
-app.listen(3000);
+module.exports = app.listen(3000);
