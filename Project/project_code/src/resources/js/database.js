@@ -300,6 +300,32 @@ function login(username, password) {
     });
 }
 
+function changePassword(username, password, newhash) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Verify the current password
+            const user = await login(username, password);
+
+            // If the current password is correct, update the password to the new one
+            if (user) {
+                const updateQuery = `UPDATE users SET password = $1 WHERE username = $2`;
+                await db.none(updateQuery,[newhash,username]);
+
+                resolve({ message: 'Password changed successfully' });
+            } else {
+                // Current password is incorrect
+                reject(new Error('Incorrect current password'));
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+function deleteAccount(username){
+
+}
+
 module.exports = {
     getBooks: getBooks,
     register: register,
@@ -309,5 +335,6 @@ module.exports = {
     getBooksbyTag: getBooksbyTag,
     getUserBookIds: getUserBookIds,
     addBooktoUser: addBookToUser,
-    removeBookFromUser: removeBookFromUser
+    removeBookFromUser: removeBookFromUser,
+    changePassword: changePassword
 };

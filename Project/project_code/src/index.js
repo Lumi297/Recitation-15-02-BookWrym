@@ -206,6 +206,20 @@ app.get('/account', (req, res) => {
   res.render('pages/account', { user: req.session.user });
 });
 
+app.post('/account', async (req, res) => {
+  try {
+    // Hash the password using bcrypt library
+    const newhash = await bcrypt.hash(req.body.newpass, 10);
+
+    await database.changePassword(req.session.user.username, req.body.currpass, newhash);
+    req.session.destroy();
+    res.status(200).redirect('/login');
+  } catch (error) {
+      console.error(error);
+      res.status(500).redirect('/account');
+  }
+});
+
 app.get('/about', (req, res) => {
   res.render('pages/about');
 });
