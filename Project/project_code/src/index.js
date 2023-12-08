@@ -150,18 +150,40 @@ app.get("/homepage", async (req, res) => {
 
 // also going to note, there will be a post route for adding to favorites, this will 
 app.get("/bookPage/:bookID", async function(req, res) {
+    try {
+      const book = await database.getBook(req.params.bookID);
+
+      if(book.volumeInfo.authors){
+        const bookAuthor = book.volumeInfo.authors[0];
+        console.log("inauthor:" + bookAuthor);
+        
+        const authorRec = await database.getBooks("inauthor:" + bookAuthor, 5);
+
+        const tags = await database.getTagsbyBook(book.id);
+
+        res.render('pages/bookPage', { book: book, recommendations: authorRec, tags:tags, user:req.session.user});
+      }
+      else {
+        const authorRec = null;
+        const tags = await database.getTagsbyBook(book.id);
+        res.render('pages/bookPage', { book: book, recommendations: authorRec, tags:tags, user:req.session.user});
+      }
+    } catch(error) {
+      console.error('Error in /bookPage route:', error);
+      res.status(500).send('Internal Server Error');
+    }
+});
+
+app.post('/addBookToUser/:bookID', async (req, res) => {
+  const { bookID } = req.params;
+  const { username } = req.body;
+
+  // Call the appropriate function to add the book to the user
   try {
-    const book = await database.getBook(req.params.bookID);
-    const bookAuthor = book.volumeInfo.authors[0];
-    console.log("inauthor:" + bookAuthor);
-    const authorRec = await database.getBooks("inauthor:" + bookAuthor, 5);
-
-
-    const tags = await database.getTagsbyBook(book.id);
-
-    res.render('pages/bookPage', { book: book, recommendations: authorRec, tags:tags});
+    await database.addBooktoUser(bookID, username);
+    res.sendStatus(200);
   } catch (error) {
-    console.error('Error in /bookPage route:', error);
+    console.error('Error adding book to user:', error);
     res.status(500).send('Internal Server Error');
   }
 });
@@ -178,5 +200,6 @@ app.get("/logout", (req, res) => {
   req.session.destroy();
   res.render("pages/login");
 });
+
 // for testing purposes, leaving this here 
-app.listen(3000);
+module.exports = app.listen(3000);

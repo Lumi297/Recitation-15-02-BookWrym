@@ -91,7 +91,7 @@ async function getTagsbyBook(googleBookId) {
         return results;
     } catch (error) {
         console.error('problem loading tags for this book', error);
-        throw error;
+        return ["No Tags"];
     }
 }
 
